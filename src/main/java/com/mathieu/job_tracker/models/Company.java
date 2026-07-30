@@ -13,11 +13,11 @@ public class Company{
     private Long id;
 
     // Name is obligatory
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String name;
 
     // Activity is obligatory
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String activity;
 
     public Company() {}

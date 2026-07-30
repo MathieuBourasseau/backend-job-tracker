@@ -13,11 +13,11 @@ public class User {
     private Long id;
 
     // Email is obligatory
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 255)
     private String email;
 
     // Password is obligatory
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String password;
 
     public User() {}
@@ -29,7 +29,7 @@ public class User {
     }
 
     // Getters and setters
-    public Long getUserId(){
+    public Long getId(){
         return this.id;
     }
 
