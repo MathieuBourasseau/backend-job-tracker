@@ -10,40 +10,52 @@ import jakarta.persistence.*;
 @Table(name="applications")
 public class Application {
 
+    // Id is auto-incremented with the DB
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Link to the job posting, optional
     @Column(length = 500)
     private String link;
 
+    // Recruiter or contact name, optional
     @Column(length = 255)
     private String contact;
 
+    // Job title is obligatory
     @Column(nullable = false, length = 255)
     private String job_title;
 
+    // Location is obligatory
     @Column(nullable = false, length = 255)
     private String location;
 
+    // Salary is optional
     @Column
     private Integer salary;
 
+    // Contract type is obligatory
     @Column(nullable = false, length = 50)
     private String contract;
 
+    // Initial application date is obligatory
     @Column(nullable = false)
     private Date application_date;
 
+    // First follow-up date, optional
     @Column
     private Date application_re_submission_date;
 
+    // Second follow-up date, optional
     @Column
     private Date application_re_submission_date_2;
 
+    // Interview obtained, defaults to false
     @Column(nullable = false)
     private Boolean interview = false;
 
+    // Refusal reason, optional, relevant only if the application was refused
     @Column(length = 255)
     private String refusal_reason;
 
@@ -59,6 +71,7 @@ public class Application {
 
     public Application() {}
 
+    // Constructor
     public Application(String link, String contact, String job_title, String location, Integer salary,
             String contract, Date application_date, Date application_re_submission_date,
             Date application_re_submission_date_2, Boolean interview, String refusal_reason,
@@ -78,6 +91,7 @@ public class Application {
         this.company = company;
     }
 
+    // Getters and setters
     public Long getId() {
         return this.id;
     }

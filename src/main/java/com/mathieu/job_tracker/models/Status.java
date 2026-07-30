@@ -10,16 +10,20 @@ import jakarta.persistence.*;
 @Table(name="status")
 public class Status {
     
+    // Id is auto-incremented with the DB
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // State value is obligatory
     @Column(nullable = false, length = 50)
     private String state;
 
+    // Date and time of the status change is obligatory
     @Column(nullable = false)
     private Timestamp date;
 
+    // Foreign Key for application_id
     @ManyToOne
     @JoinColumn(name="application_id", nullable = false)
     private Application application;
