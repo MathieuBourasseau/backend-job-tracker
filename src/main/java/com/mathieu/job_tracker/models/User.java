@@ -29,7 +29,7 @@ public class User {
     }
 
     // Getters and setters
-    public Long getId(){
+    public Long getUserId(){
         return this.id;
     }
 
