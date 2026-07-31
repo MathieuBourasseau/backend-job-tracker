@@ -4,7 +4,8 @@ import com.mathieu.job_tracker.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+// Empty interface: Spring Data JPA generates the implementation (save, findAll, findById, deleteById...)
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>{
-    
+
 }
