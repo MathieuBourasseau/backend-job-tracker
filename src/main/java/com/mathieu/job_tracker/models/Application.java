@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 // Create Application entity
 
 @Entity
-@Table(name="applications")
+@Table(name = "applications")
 public class Application {
 
     // Id is auto-incremented with the DB
@@ -61,15 +61,16 @@ public class Application {
 
     // Foreign Key for user_id
     @ManyToOne
-    @JoinColumn(name="user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     // Foreign Key for company_id
     @ManyToOne
-    @JoinColumn(name="company_id", nullable = false)
+    @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-    public Application() {}
+    public Application() {
+    }
 
     // Constructor
     public Application(String link, String contact, String job_title, String location, Integer salary,
