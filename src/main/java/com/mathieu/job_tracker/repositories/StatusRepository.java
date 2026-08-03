@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 // Empty interface: Spring Data JPA generates the implementation (save, findAll, findById, deleteById...)
 @Repository
 public interface StatusRepository extends JpaRepository<Status, Long>{
-    // Method to get an application by its id
-    List<Status>findByApplicationId(Long id);
+    // Method to get the statuses history of an application by its id
+    List<Status> findByApplicationId(Long id);
 }

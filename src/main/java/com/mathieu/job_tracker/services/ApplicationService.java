@@ -28,7 +28,8 @@ public class ApplicationService {
     private final StatusRepository statusRepository;
 
     // ApplicationService needs ApplicationRepository to work
-    public ApplicationService(ApplicationRepository applicationRepository, UserRepository userRepository, CompanyRepository companyRepository, StatusRepository statusRepository){
+    public ApplicationService(ApplicationRepository applicationRepository, UserRepository userRepository,
+            CompanyRepository companyRepository, StatusRepository statusRepository) {
         this.applicationRepository = applicationRepository;
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
@@ -37,18 +38,20 @@ public class ApplicationService {
 
     // ApplicationService methods
     // createApplication method
-    public ApplicationResponseDto createApplication(ApplicationCreateDto dto, Long userId){
-        
+    public ApplicationResponseDto createApplication(ApplicationCreateDto dto, Long userId) {
+
         // Find user in DB with the id
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
         // Check if the company is already existing || Create the company if not found
         Company company = companyRepository.findByName(dto.getCompanyName())
-            .orElseGet(() -> companyRepository.save(new Company(dto.getCompanyName(), dto.getCompanyActivity())));
+                .orElseGet(() -> companyRepository.save(new Company(dto.getCompanyName(), dto.getCompanyActivity())));
 
         // Create a new application entity
-        Application newApplication = new Application(dto.getLink(), dto.getContact(), dto.getJobTitle(), dto.getLocation(), dto.getSalary(), dto.getContract(), dto.getApplicationDate(), null, null, false, null, user, company);
+        Application newApplication = new Application(dto.getLink(), dto.getContact(), dto.getJobTitle(),
+                dto.getLocation(), dto.getSalary(), dto.getContract(), dto.getApplicationDate(), null, null, false,
+                null, user, company);
 
         // Save the entity created
         Application savedApplication = applicationRepository.save(newApplication);
@@ -58,35 +61,33 @@ public class ApplicationService {
         Status savedStatus = statusRepository.save(initialStatus);
 
         List<StatusResponseDto> statuses = List.of(
-            new StatusResponseDto(savedStatus.getId(), savedStatus.getState(), savedStatus.getDate())
-        );
+                new StatusResponseDto(savedStatus.getId(), savedStatus.getState(), savedStatus.getDate()));
 
         // Response Dto
         ApplicationResponseDto response = new ApplicationResponseDto(
-            savedApplication.getId(),
-            savedApplication.getLink(),
-            savedApplication.getContact(),
-            savedApplication.getJobTitle(),
-            savedApplication.getLocation(),
-            savedApplication.getSalary(),
-            savedApplication.getContract(),
-            savedApplication.getApplicationDate(),
-            savedApplication.getApplicationReSubmissionDate(),
-            savedApplication.getApplicationReSubmissionDate2(),
-            savedApplication.getInterview(),
-            savedApplication.getRefusalReason(),
-            company.getName(),
-            company.getActivity(),
-            company.getId(),
-            statuses
-        );
+                savedApplication.getId(),
+                savedApplication.getLink(),
+                savedApplication.getContact(),
+                savedApplication.getJobTitle(),
+                savedApplication.getLocation(),
+                savedApplication.getSalary(),
+                savedApplication.getContract(),
+                savedApplication.getApplicationDate(),
+                savedApplication.getApplicationReSubmissionDate(),
+                savedApplication.getApplicationReSubmissionDate2(),
+                savedApplication.getInterview(),
+                savedApplication.getRefusalReason(),
+                company.getName(),
+                company.getActivity(),
+                company.getId(),
+                statuses);
 
         return response;
     }
 
     // getUserApplications method
 
-    public List<ApplicationResponseDto> getUserApplications(Long userId){
+    public List<ApplicationResponseDto> getUserApplications(Long userId) {
 
         // Get all user's application with the userId
         List<Application> applications = applicationRepository.findByUserId(userId);
@@ -94,8 +95,44 @@ public class ApplicationService {
         // Create an array list with full applications (data and statuses)
         List<ApplicationResponseDto> result = new ArrayList<>();
 
-        
+        for (Application application : applications) {
+
+            // Get statuses historic for each application
+            List<Status> statusList = statusRepository.findByApplicationId(application.getId());
+
+            // List that will hold the statuses converted for the response
+            List<StatusResponseDto> statusResponseDtos = new ArrayList<>();
+
+            // Convert each status entity into a StatusResponseDto
+            for (Status status : statusList) {
+                statusResponseDtos.add(new StatusResponseDto(status.getId(), status.getState(), status.getDate()));
+            }
+
+            // Build the response DTO for this application
+            ApplicationResponseDto responseDto = new ApplicationResponseDto(
+                    application.getId(),
+                    application.getLink(),
+                    application.getContact(),
+                    application.getJobTitle(),
+                    application.getLocation(),
+                    application.getSalary(),
+                    application.getContract(),
+                    application.getApplicationDate(),
+                    application.getApplicationReSubmissionDate(),
+                    application.getApplicationReSubmissionDate2(),
+                    application.getInterview(),
+                    application.getRefusalReason(),
+                    application.getCompany().getName(),
+                    application.getCompany().getActivity(),
+                    application.getCompany().getId(),
+                    statusResponseDtos);
+
+            // Add this application's DTO to the final result list
+            result.add(responseDto);
+
+        }
+
+        return result;
     }
 
-    
 }
