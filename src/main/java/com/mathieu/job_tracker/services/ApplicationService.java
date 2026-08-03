@@ -3,6 +3,7 @@ package com.mathieu.job_tracker.services;
 import com.mathieu.job_tracker.dto.ApplicationCreateDto;
 import com.mathieu.job_tracker.dto.ApplicationResponseDto;
 import com.mathieu.job_tracker.models.Application;
+import com.mathieu.job_tracker.models.User;
 import com.mathieu.job_tracker.repositories.ApplicationRepository;
 import com.mathieu.job_tracker.repositories.CompanyRepository;
 import com.mathieu.job_tracker.repositories.UserRepository;
@@ -27,10 +28,9 @@ public class ApplicationService {
     // ApplicationService methods
     public ApplicationResponseDto createApplication(ApplicationCreateDto dto, Long userId){
         
-        Application newApplication = new Application(dto.getLink(),
-            dto.getContact(),
+        // Find user in DB with the id
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
-        )
     }
 
     
