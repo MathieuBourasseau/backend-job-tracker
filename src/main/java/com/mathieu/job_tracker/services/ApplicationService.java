@@ -14,6 +14,7 @@ import com.mathieu.job_tracker.repositories.UserRepository;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.stereotype.Service;
 
@@ -89,6 +90,10 @@ public class ApplicationService {
 
         // Get all user's application with the userId
         List<Application> applications = applicationRepository.findByUserId(userId);
+
+        // Create an array list with full applications (data and statuses)
+        List<ApplicationResponseDto> result = new ArrayList<>();
+
         
     }
 
