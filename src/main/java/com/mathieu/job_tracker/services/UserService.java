@@ -12,7 +12,7 @@ public class UserService {
     // Repository required to get access to its methods
     private final UserRepository userRepository;
 
-    // UserServices needs the repository to use the metier logic
+    // UserServices needs the repository to use the business logic
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
