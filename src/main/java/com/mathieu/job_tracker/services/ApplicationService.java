@@ -9,4 +9,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class ApplicationService {
     
+    // Repository required to get access to methods needed
+    private final ApplicationRepository applicationRepository;
+
+    // ApplicationService needs ApplicationRepository to work
+    public ApplicationService(ApplicationRepository applicationRepository){
+        this.applicationRepository = applicationRepository;
+    }
+
+    
 }
