@@ -178,4 +178,71 @@ public class ApplicationService {
         return responseDto;
     }
 
+    public ApplicationResponseDto updateApplication(Long id, ApplicationCreateDto dto){
+
+        // Find the existing application, or fail if it doesn't exist
+        Application existingApplication = applicationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Candidature non trouvée"));
+
+        // Find or create the company from the updated dto
+        Company company = companyRepository.findByName(dto.getCompanyName())
+                .orElseGet(() -> companyRepository.save(new Company(dto.getCompanyName(), dto.getCompanyActivity())));
+
+        // Apply the new values to the existing entity
+        existingApplication.setLink(dto.getLink());
+        existingApplication.setContact(dto.getContact());
+        existingApplication.setJobTitle(dto.getJobTitle());
+        existingApplication.setLocation(dto.getLocation());
+        existingApplication.setSalary(dto.getSalary());
+        existingApplication.setContract(dto.getContract());
+        existingApplication.setApplicationDate(dto.getApplicationDate());
+        existingApplication.setCompany(company);
+
+        Application savedApplication = applicationRepository.save(existingApplication);
+
+        // Get statuses of this application and convert them to StatusResponseDto
+        List<Status> listStatus = statusRepository.findByApplicationId(savedApplication.getId());
+        List<StatusResponseDto> statusResponseDtos = new ArrayList<>();
+        for (Status status : listStatus) {
+            statusResponseDtos.add(new StatusResponseDto(status.getId(), status.getState(), status.getDate()));
+        }
+
+        // Create responseDto
+        ApplicationResponseDto responseDto = new ApplicationResponseDto(
+                savedApplication.getId(),
+                savedApplication.getLink(),
+                savedApplication.getContact(),
+                savedApplication.getJobTitle(),
+                savedApplication.getLocation(),
+                savedApplication.getSalary(),
+                savedApplication.getContract(),
+                savedApplication.getApplicationDate(),
+                savedApplication.getApplicationReSubmissionDate(),
+                savedApplication.getApplicationReSubmissionDate2(),
+                savedApplication.getInterview(),
+                savedApplication.getRefusalReason(),
+                company.getName(),
+                company.getActivity(),
+                company.getId(),
+                statusResponseDtos);
+
+        return responseDto;
+    }
+
+    // deleteApplication method
+    public void deleteApplication(Long id){
+
+        // Find existing candidature
+        Application existingApplication = applicationRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Candidature non trouvée."));
+
+        // Find all status
+        List<Status> listStatus = statusRepository.findByApplicationId(id);
+        statusRepository.deleteAll(listStatus);
+        
+        // Delete all application data
+        applicationRepository.delete(existingApplication);
+        
+    }
+
 }
