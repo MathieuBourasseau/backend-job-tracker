@@ -135,4 +135,47 @@ public class ApplicationService {
         return result;
     }
 
+    // getApplicationById method
+    public ApplicationResponseDto getApplicationById(Long id){
+
+        // Checking the id
+        Application application = applicationRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Candidature non trouvée"));
+
+        // Get statuses of this application and convert it in StatusResponseDto
+        List<Status> listStatus = statusRepository.findByApplicationId(id);
+
+        List<StatusResponseDto> statusResponseDtos = new ArrayList<>();
+        for(Status status : listStatus){
+            statusResponseDtos.add(new StatusResponseDto(
+                status.getId(),
+                status.getState(),
+                status.getDate()
+            ));
+               
+        }
+       
+        // Create responseDto
+        ApplicationResponseDto responseDto = new ApplicationResponseDto(
+                application.getId(),
+                application.getLink(),
+                application.getContact(),
+                application.getJobTitle(),
+                application.getLocation(),
+                application.getSalary(),
+                application.getContract(),
+                application.getApplicationDate(),
+                application.getApplicationReSubmissionDate(),
+                application.getApplicationReSubmissionDate2(),
+                application.getInterview(),
+                application.getRefusalReason(),
+                application.getCompany().getName(),
+                application.getCompany().getActivity(),
+                application.getCompany().getId(),
+                statusResponseDtos
+        );
+
+        return responseDto;
+    }
+
 }
