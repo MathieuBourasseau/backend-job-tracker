@@ -35,6 +35,7 @@ public class ApplicationService {
     }
 
     // ApplicationService methods
+    // createApplication method
     public ApplicationResponseDto createApplication(ApplicationCreateDto dto, Long userId){
         
         // Find user in DB with the id
@@ -80,6 +81,15 @@ public class ApplicationService {
         );
 
         return response;
+    }
+
+    // getUserApplications method
+
+    public List<ApplicationResponseDto> getUserApplications(Long userId){
+
+        // Get all user's application with the userId
+        List<Application> applications = applicationRepository.findByUserId(userId);
+        
     }
 
     
