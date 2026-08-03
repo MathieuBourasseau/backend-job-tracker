@@ -37,6 +37,9 @@ public class ApplicationService {
         Company company = companyRepository.findByName(dto.getCompanyName())
             .orElseGet(() -> companyRepository.save(new Company(dto.getCompanyName(), dto.getCompanyActivity())));
 
+        // Create a new application entity
+        Application newApplication = new Application(dto.getLink(), dto.getContact(), dto.getJobTitle(), dto.getLocation(), dto.getSalary(), dto.getContract(), dto.getApplicationDate(), null, null, false, null, user, company);
+
     }
 
     
