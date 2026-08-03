@@ -2,28 +2,36 @@ package com.mathieu.job_tracker.services;
 
 import com.mathieu.job_tracker.dto.ApplicationCreateDto;
 import com.mathieu.job_tracker.dto.ApplicationResponseDto;
+import com.mathieu.job_tracker.dto.StatusResponseDto;
 import com.mathieu.job_tracker.models.Application;
 import com.mathieu.job_tracker.models.Company;
+import com.mathieu.job_tracker.models.Status;
 import com.mathieu.job_tracker.models.User;
 import com.mathieu.job_tracker.repositories.ApplicationRepository;
 import com.mathieu.job_tracker.repositories.CompanyRepository;
+import com.mathieu.job_tracker.repositories.StatusRepository;
 import com.mathieu.job_tracker.repositories.UserRepository;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 @Service
 public class ApplicationService {
-    
+
     // Repository required to get access to methods needed
     private final ApplicationRepository applicationRepository;
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
+    private final StatusRepository statusRepository;
 
     // ApplicationService needs ApplicationRepository to work
-    public ApplicationService(ApplicationRepository applicationRepository, UserRepository userRepository, CompanyRepository companyRepository){
+    public ApplicationService(ApplicationRepository applicationRepository, UserRepository userRepository, CompanyRepository companyRepository, StatusRepository statusRepository){
         this.applicationRepository = applicationRepository;
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
+        this.statusRepository = statusRepository;
     }
 
     // ApplicationService methods
@@ -40,6 +48,38 @@ public class ApplicationService {
         // Create a new application entity
         Application newApplication = new Application(dto.getLink(), dto.getContact(), dto.getJobTitle(), dto.getLocation(), dto.getSalary(), dto.getContract(), dto.getApplicationDate(), null, null, false, null, user, company);
 
+        // Save the entity created
+        Application savedApplication = applicationRepository.save(newApplication);
+
+        // Create the initial status entry ("A faire") for this application
+        Status initialStatus = new Status("A faire", new Timestamp(System.currentTimeMillis()), savedApplication);
+        Status savedStatus = statusRepository.save(initialStatus);
+
+        List<StatusResponseDto> statuses = List.of(
+            new StatusResponseDto(savedStatus.getId(), savedStatus.getState(), savedStatus.getDate())
+        );
+
+        // Response Dto
+        ApplicationResponseDto response = new ApplicationResponseDto(
+            savedApplication.getId(),
+            savedApplication.getLink(),
+            savedApplication.getContact(),
+            savedApplication.getJobTitle(),
+            savedApplication.getLocation(),
+            savedApplication.getSalary(),
+            savedApplication.getContract(),
+            savedApplication.getApplicationDate(),
+            savedApplication.getApplicationReSubmissionDate(),
+            savedApplication.getApplicationReSubmissionDate2(),
+            savedApplication.getInterview(),
+            savedApplication.getRefusalReason(),
+            company.getName(),
+            company.getActivity(),
+            company.getId(),
+            statuses
+        );
+
+        return response;
     }
 
     
