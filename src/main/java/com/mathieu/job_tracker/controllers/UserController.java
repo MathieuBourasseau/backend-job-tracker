@@ -19,11 +19,14 @@ public class UserController {
         this.userService = userService;
     }
 
-    // Post request to create a new user
+    // POST route to create a user
     @PostMapping
     public ResponseEntity<UserResponseDto> createUser(@RequestBody UserCreateDto dto){
-        UserResponseDto createdUser = userService.createUser(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+        try {
+            UserResponseDto createdUser = userService.createUser(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdUser); 
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
-
 }
