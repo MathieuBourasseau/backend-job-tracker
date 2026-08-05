@@ -18,4 +18,11 @@ public class ApplicationController {
     public ApplicationController(ApplicationService applicationService){
         this.applicationService = applicationService;
     }
+
+    // Route to create user's application
+    @PostMapping("/users/{userId}")
+    public ResponseEntity<ApplicationResponseDto> createApplication(@PathVariable Long userId, @RequestBody ApplicationCreateDto dto){
+        ApplicationResponseDto createdApplication = applicationService.createApplication(dto, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdApplication);
+    }
 }

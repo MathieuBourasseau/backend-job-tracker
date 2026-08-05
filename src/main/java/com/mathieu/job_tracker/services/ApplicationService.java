@@ -37,7 +37,8 @@ public class ApplicationService {
     }
 
     // ApplicationService methods
-    // createApplication method
+
+    // --- CREATE APPLICATION METHOD ---
     public ApplicationResponseDto createApplication(ApplicationCreateDto dto, Long userId) {
 
         // Find user in DB with the id
@@ -85,7 +86,7 @@ public class ApplicationService {
         return response;
     }
 
-    // getUserApplications method
+    // --- GET USER'S APPLICATIONS METHOD ---
 
     public List<ApplicationResponseDto> getUserApplications(Long userId) {
 
@@ -135,7 +136,8 @@ public class ApplicationService {
         return result;
     }
 
-    // getApplicationById method
+    // --- GET APPLICATION BY ID METHOD --- 
+
     public ApplicationResponseDto getApplicationById(Long id){
 
         // Checking the id
@@ -177,6 +179,8 @@ public class ApplicationService {
 
         return responseDto;
     }
+
+    //  --- UPDATE APPLICATION METHOD --- 
 
     public ApplicationResponseDto updateApplication(Long id, ApplicationCreateDto dto){
 
@@ -229,7 +233,8 @@ public class ApplicationService {
         return responseDto;
     }
 
-    // deleteApplication method
+    // --- DELETE APPLICATION METHOD ---
+    
     public void deleteApplication(Long id){
 
         // Find existing candidature
