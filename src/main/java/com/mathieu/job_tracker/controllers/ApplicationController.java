@@ -21,7 +21,7 @@ public class ApplicationController {
         this.applicationService = applicationService;
     }
 
-    // Route to create user's application
+    // POST route to create a user's application
     @PostMapping("/users/{userId}")
     public ResponseEntity<ApplicationResponseDto> createApplication(@PathVariable Long userId, @RequestBody ApplicationCreateDto dto){
         try {
@@ -30,13 +30,23 @@ public class ApplicationController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
-        
     }
 
-    // Route to get all user's application
+    // GET route to get all user applications
     @GetMapping("/users/{userId}")
     public ResponseEntity<List<ApplicationResponseDto>> getUserApplications(@PathVariable Long userId){
         List<ApplicationResponseDto> userApplications = applicationService.getUserApplications(userId);
         return ResponseEntity.ok(userApplications);
+    }
+
+    // GET route to get an application by its id
+    @GetMapping("/{applicationId}")
+    public ResponseEntity<ApplicationResponseDto> getApplicationById(@PathVariable Long applicationId){
+        try {
+            ApplicationResponseDto selectedApplication = applicationService.getApplicationById(applicationId);
+            return ResponseEntity.ok(selectedApplication);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
