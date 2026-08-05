@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/applications")
 public class ApplicationController {
@@ -23,7 +25,7 @@ public class ApplicationController {
 
     // POST route to create a user's application
     @PostMapping("/users/{userId}")
-    public ResponseEntity<ApplicationResponseDto> createApplication(@PathVariable Long userId, @RequestBody ApplicationCreateDto dto){
+    public ResponseEntity<ApplicationResponseDto> createApplication(@PathVariable Long userId, @Valid @RequestBody ApplicationCreateDto dto){
         try {
             ApplicationResponseDto createdApplication = applicationService.createApplication(dto, userId);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdApplication);
@@ -52,7 +54,7 @@ public class ApplicationController {
 
     // PUT route to update an application
     @PutMapping("/{applicationId}")
-    public ResponseEntity<ApplicationResponseDto> updateApplication(@PathVariable Long applicationId, @RequestBody ApplicationCreateDto dto){
+    public ResponseEntity<ApplicationResponseDto> updateApplication(@PathVariable Long applicationId, @Valid @RequestBody ApplicationCreateDto dto){
         try {
             ApplicationResponseDto updatedApplication = applicationService.updateApplication(applicationId, dto);
             return ResponseEntity.ok(updatedApplication);

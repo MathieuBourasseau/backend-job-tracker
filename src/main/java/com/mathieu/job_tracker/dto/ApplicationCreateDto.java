@@ -2,17 +2,33 @@ package com.mathieu.job_tracker.dto;
 
 import java.sql.Date;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class ApplicationCreateDto {
 
     // Fields the client is allowed to provide
     private String link;
     private String contact;
+
+    @NotBlank(message = "Titre de candidature requis.")
     private String job_title;
+
+    @NotBlank(message = "Localisation requise.")
     private String location;
+
     private Integer salary;
+
+    @NotBlank(message = "Type de contrat requis.")
     private String contract;
+
+    @NotNull(message = "Une date est requise.")
     private Date application_date;
+
+    @NotBlank(message = "Nom d'entreprise requis")
     private String companyName;
+
+    @NotBlank(message = "Activité de l'entreprise requis")
     private String companyActivity;
 
     // Constructors
