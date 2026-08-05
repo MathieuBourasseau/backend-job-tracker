@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -21,7 +23,7 @@ public class UserController {
 
     // POST route to create a user
     @PostMapping
-    public ResponseEntity<UserResponseDto> createUser(@RequestBody UserCreateDto dto){
+    public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserCreateDto dto){
         try {
             UserResponseDto createdUser = userService.createUser(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdUser); 
