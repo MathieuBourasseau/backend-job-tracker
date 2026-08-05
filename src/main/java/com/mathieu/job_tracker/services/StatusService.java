@@ -8,7 +8,11 @@ import com.mathieu.job_tracker.models.Application;
 import com.mathieu.job_tracker.repositories.StatusRepository;
 import com.mathieu.job_tracker.repositories.ApplicationRepository;
 
+
+import java.sql.Timestamp;
+
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class StatusService {
@@ -24,19 +28,24 @@ public class StatusService {
 
     // Method to add a new status
 
-    public ApplicationResponseDto createStatus(StatusCreateDto dto)
+    public ApplicationResponseDto createStatus(StatusCreateDto dto){
 
-    // Get the id from dto and check if there is an existing application
+        // Get the id from dto and check if there is an existing application
     // If not throw error
     Application application = applicationRepository.findById(dto.getApplicationId())
         .orElseThrow(() -> new RuntimeException("Cette candidature n'existe pas."));
 
 
     // Create a new status entity
+    Status newStatus = new Status(dto.getState(), new Timestamp(System.currentTimeMillis()), application);
 
     // Save this entity in DB
+    Status savedStatus = statusRepository.save(newStatus);
 
     // Create ApplicationResponseDto
+    }
+
+    
 
     
 }
