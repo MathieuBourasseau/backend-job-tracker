@@ -60,4 +60,15 @@ public class ApplicationController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // DELETE route to delete an application
+    @DeleteMapping("/{applicationId}")
+    public ResponseEntity<Void> deleteApplication(@PathVariable Long applicationId){
+        try {
+            applicationService.deleteApplication(applicationId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
