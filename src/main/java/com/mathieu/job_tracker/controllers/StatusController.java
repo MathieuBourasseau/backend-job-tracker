@@ -1,13 +1,15 @@
 package com.mathieu.job_tracker.controllers;
 
+import com.mathieu.job_tracker.dto.ApplicationResponseDto;
 import com.mathieu.job_tracker.dto.StatusCreateDto;
-import com.mathieu.job_tracker.dto.StatusResponseDto;
 import com.mathieu.job_tracker.services.StatusService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@RestController
+@RequestMapping("/api/statuses")
 public class StatusController {
 
     // Service required
@@ -17,5 +19,18 @@ public class StatusController {
     public StatusController(StatusService statusService){
         this.statusService = statusService;
     }
+
+    // POST route to create a new status
+    @PostMapping
+    public ResponseEntity<ApplicationResponseDto> createStatus(@RequestBody StatusCreateDto dto){
+        try {
+            ApplicationResponseDto createdStatus = statusService.createStatus(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdStatus);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
     
 }
