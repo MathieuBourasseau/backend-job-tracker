@@ -8,11 +8,11 @@ import com.mathieu.job_tracker.models.Application;
 import com.mathieu.job_tracker.repositories.StatusRepository;
 import com.mathieu.job_tracker.repositories.ApplicationRepository;
 
-
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class StatusService {
@@ -21,7 +21,7 @@ public class StatusService {
     private final StatusRepository statusRepository;
     private final ApplicationRepository applicationRepository;
 
-    public StatusService(StatusRepository statusRepository, ApplicationRepository applicationRepository){
+    public StatusService(StatusRepository statusRepository, ApplicationRepository applicationRepository) {
         this.statusRepository = statusRepository;
         this.applicationRepository = applicationRepository;
     }
@@ -31,21 +31,52 @@ public class StatusService {
     public ApplicationResponseDto createStatus(StatusCreateDto dto){
 
         // Get the id from dto and check if there is an existing application
-    // If not throw error
-    Application application = applicationRepository.findById(dto.getApplicationId())
+        // If not throw error
+        Application application = applicationRepository.findById(dto.getApplicationId())
         .orElseThrow(() -> new RuntimeException("Cette candidature n'existe pas."));
 
 
-    // Create a new status entity
-    Status newStatus = new Status(dto.getState(), new Timestamp(System.currentTimeMillis()), application);
+        // Create a new status entity
+        Status newStatus = new Status(dto.getState(), new Timestamp(System.currentTimeMillis()), application);
 
-    // Save this entity in DB
-    Status savedStatus = statusRepository.save(newStatus);
+        // Save this entity in DB
+        statusRepository.save(newStatus);
 
-    // Create ApplicationResponseDto
+        // Find all previous status linked to the application
+        List<Status> listStatus = statusRepository.findByApplicationId(dto.getApplicationId());
+
+        // Create a array to send all statuses
+        List<StatusResponseDto> statusReponseDtos = new ArrayList<>();
+        for(Status status : listStatus){
+            statusReponseDtos.add(new StatusResponseDto(
+                status.getId(),
+                status.getState(),
+                status.getDate()
+            ));
+        }
+
+        // Create ApplicationResponseDto
+        ApplicationResponseDto responseDto = new ApplicationResponseDto(
+                application.getId(),
+                application.getLink(),
+                application.getContact(),
+                application.getJobTitle(),
+                application.getLocation(),
+                application.getSalary(),
+                application.getContract(),
+                application.getApplicationDate(),
+                application.getApplicationReSubmissionDate(),
+                application.getApplicationReSubmissionDate2(),
+                application.getInterview(),
+                application.getRefusalReason(),
+                application.getCompany().getName(),
+                application.getCompany().getActivity(),
+                application.getCompany().getId(),
+                statusReponseDtos
+        );
+
+        return responseDto;
+
     }
 
-    
-
-    
 }
