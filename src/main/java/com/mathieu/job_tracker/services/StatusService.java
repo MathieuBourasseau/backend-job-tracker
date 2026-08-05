@@ -1,8 +1,10 @@
 package com.mathieu.job_tracker.services;
 
+import com.mathieu.job_tracker.dto.ApplicationResponseDto;
 import com.mathieu.job_tracker.dto.StatusCreateDto;
 import com.mathieu.job_tracker.dto.StatusResponseDto;
 import com.mathieu.job_tracker.models.Status;
+import com.mathieu.job_tracker.models.Application;
 import com.mathieu.job_tracker.repositories.StatusRepository;
 import com.mathieu.job_tracker.repositories.ApplicationRepository;
 
@@ -20,6 +22,21 @@ public class StatusService {
         this.applicationRepository = applicationRepository;
     }
 
+    // Method to add a new status
+
+    public ApplicationResponseDto createStatus(StatusCreateDto dto)
+
+    // Get the id from dto and check if there is an existing application
+    // If not throw error
+    Application application = applicationRepository.findById(dto.getApplicationId())
+        .orElseThrow(() -> new RuntimeException("Cette candidature n'existe pas."));
+
+
+    // Create a new status entity
+
+    // Save this entity in DB
+
+    // Create ApplicationResponseDto
 
     
 }
