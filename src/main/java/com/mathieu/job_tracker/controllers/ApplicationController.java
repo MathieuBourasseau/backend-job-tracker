@@ -49,4 +49,15 @@ public class ApplicationController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // PUT route to update an application
+    @PutMapping("/{applicationId}")
+    public ResponseEntity<ApplicationResponseDto> updateApplication(@PathVariable Long applicationId, @RequestBody ApplicationCreateDto dto){
+        try {
+            ApplicationResponseDto updatedApplication = applicationService.updateApplication(applicationId, dto);
+            return ResponseEntity.ok(updatedApplication);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
