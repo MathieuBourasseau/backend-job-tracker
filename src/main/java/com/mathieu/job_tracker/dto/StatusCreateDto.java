@@ -1,9 +1,15 @@
 package com.mathieu.job_tracker.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class StatusCreateDto {
 
     // Fields the client is allowed to provide
+    @NotBlank(message = "Un état est requis.")
     private String state;
+
+    @NotNull(message = "L'id de la candidature est requis.")
     private Long applicationId;
 
     // Constructors

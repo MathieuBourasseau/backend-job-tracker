@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/statuses")
 public class StatusController {
@@ -22,7 +24,7 @@ public class StatusController {
 
     // POST route to create a new status
     @PostMapping
-    public ResponseEntity<ApplicationResponseDto> createStatus(@RequestBody StatusCreateDto dto){
+    public ResponseEntity<ApplicationResponseDto> createStatus(@Valid @RequestBody StatusCreateDto dto){
         try {
             ApplicationResponseDto createdStatus = statusService.createStatus(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdStatus);
