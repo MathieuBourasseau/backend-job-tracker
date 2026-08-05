@@ -26,7 +26,7 @@ public class StatusService {
         this.applicationRepository = applicationRepository;
     }
 
-    // Method to add a new status
+    // --- METHOD TO ADD CREATE A NEW STATUS ---
 
     public ApplicationResponseDto createStatus(StatusCreateDto dto){
 
