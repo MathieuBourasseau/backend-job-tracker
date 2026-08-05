@@ -1,9 +1,15 @@
 package com.mathieu.job_tracker.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class UserCreateDto {
 
     // Fields the client is allowed to provide
+
+    @NotBlank(message = "Une adresse mail est requise.")
     private String email;
+
+    @NotBlank(message = "Un mot de passe est requis.")
     private String password;
 
     // Constructors

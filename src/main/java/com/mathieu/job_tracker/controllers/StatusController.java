@@ -30,7 +30,4 @@ public class StatusController {
             return ResponseEntity.notFound().build();
         }
     }
-
-
-    
 }
