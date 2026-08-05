@@ -1,6 +1,7 @@
 package com.mathieu.job_tracker.controllers;
 
 import com.mathieu.job_tracker.dto.UserCreateDto;
+import com.mathieu.job_tracker.dto.UserResponseDto;
 import com.mathieu.job_tracker.models.User;
 import com.mathieu.job_tracker.services.UserService;
 
@@ -17,6 +18,13 @@ public class UserController {
 
     public UserController(UserService userService){
         this.userService = userService;
+    }
+
+    // Post request to create a new user
+    @PostMapping
+    public ResponseEntity<UserResponseDto> createUser(@RequestBody UserCreateDto dto){
+        UserResponseDto createdUser = userService.createUser(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
 }
