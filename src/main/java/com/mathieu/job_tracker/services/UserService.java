@@ -2,6 +2,7 @@ package com.mathieu.job_tracker.services;
 
 import com.mathieu.job_tracker.dto.UserCreateDto;
 import com.mathieu.job_tracker.dto.UserResponseDto;
+import com.mathieu.job_tracker.exceptions.EmailAlreadyExistsException;
 import com.mathieu.job_tracker.models.User;
 import com.mathieu.job_tracker.repositories.UserRepository;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class UserService {
         String email = dto.getEmail();
 
         if (userRepository.findByEmail(email).isPresent()) {
-            throw new RuntimeException("Cette adresse email existe déjà.");
+            throw new EmailAlreadyExistsException("Ce mail existe déjà.");
         }
 
         // If conditions are valid we can create and save the new user in DB
