@@ -3,6 +3,7 @@ package com.mathieu.job_tracker.services;
 import com.mathieu.job_tracker.dto.ApplicationCreateDto;
 import com.mathieu.job_tracker.dto.ApplicationResponseDto;
 import com.mathieu.job_tracker.dto.StatusResponseDto;
+import com.mathieu.job_tracker.exceptions.ResourceNotFoundException;
 import com.mathieu.job_tracker.models.Application;
 import com.mathieu.job_tracker.models.Company;
 import com.mathieu.job_tracker.models.Status;
@@ -43,7 +44,7 @@ public class ApplicationService {
 
         // Find user in DB with the id
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur non trouvé"));
 
         // Check if the company is already existing || Create the company if not found
         Company company = companyRepository.findByName(dto.getCompanyName())
@@ -142,7 +143,7 @@ public class ApplicationService {
 
         // Checking the id
         Application application = applicationRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Candidature non trouvée"));
+            .orElseThrow(() -> new ResourceNotFoundException("Candidature non trouvée"));
 
         // Get statuses of this application and convert it in StatusResponseDto
         List<Status> listStatus = statusRepository.findByApplicationId(id);
@@ -186,7 +187,7 @@ public class ApplicationService {
 
         // Find the existing application, or fail if it doesn't exist
         Application existingApplication = applicationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Candidature non trouvée"));
+                .orElseThrow(() -> new ResourceNotFoundException("Candidature non trouvée"));
 
         // Find or create the company from the updated dto
         Company company = companyRepository.findByName(dto.getCompanyName())
@@ -239,7 +240,7 @@ public class ApplicationService {
 
         // Find existing candidature
         Application existingApplication = applicationRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Candidature non trouvée."));
+            .orElseThrow(() -> new ResourceNotFoundException("Candidature non trouvée."));
 
         // Find all status
         List<Status> listStatus = statusRepository.findByApplicationId(id);
