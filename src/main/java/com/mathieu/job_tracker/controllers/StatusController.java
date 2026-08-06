@@ -25,11 +25,7 @@ public class StatusController {
     // POST route to create a new status
     @PostMapping
     public ResponseEntity<ApplicationResponseDto> createStatus(@Valid @RequestBody StatusCreateDto dto){
-        try {
-            ApplicationResponseDto createdStatus = statusService.createStatus(dto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdStatus);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        ApplicationResponseDto createdStatus = statusService.createStatus(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdStatus);
     }
 }

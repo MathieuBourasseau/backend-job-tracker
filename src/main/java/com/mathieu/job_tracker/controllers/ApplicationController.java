@@ -26,12 +26,8 @@ public class ApplicationController {
     // POST route to create a user's application
     @PostMapping("/users/{userId}")
     public ResponseEntity<ApplicationResponseDto> createApplication(@PathVariable Long userId, @Valid @RequestBody ApplicationCreateDto dto){
-        try {
-            ApplicationResponseDto createdApplication = applicationService.createApplication(dto, userId);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdApplication);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        ApplicationResponseDto createdApplication = applicationService.createApplication(dto, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdApplication);
     }
 
     // GET route to get all user applications
@@ -44,33 +40,21 @@ public class ApplicationController {
     // GET route to get an application by its id
     @GetMapping("/{applicationId}")
     public ResponseEntity<ApplicationResponseDto> getApplicationById(@PathVariable Long applicationId){
-        try {
-            ApplicationResponseDto selectedApplication = applicationService.getApplicationById(applicationId);
-            return ResponseEntity.ok(selectedApplication);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        ApplicationResponseDto selectedApplication = applicationService.getApplicationById(applicationId);
+        return ResponseEntity.ok(selectedApplication);
     }
 
     // PUT route to update an application
     @PutMapping("/{applicationId}")
     public ResponseEntity<ApplicationResponseDto> updateApplication(@PathVariable Long applicationId, @Valid @RequestBody ApplicationCreateDto dto){
-        try {
-            ApplicationResponseDto updatedApplication = applicationService.updateApplication(applicationId, dto);
-            return ResponseEntity.ok(updatedApplication);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        ApplicationResponseDto updatedApplication = applicationService.updateApplication(applicationId, dto);
+        return ResponseEntity.ok(updatedApplication);
     }
 
     // DELETE route to delete an application
     @DeleteMapping("/{applicationId}")
     public ResponseEntity<Void> deleteApplication(@PathVariable Long applicationId){
-        try {
-            applicationService.deleteApplication(applicationId);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        applicationService.deleteApplication(applicationId);
+        return ResponseEntity.noContent().build();
     }
 }
