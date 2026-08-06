@@ -3,6 +3,7 @@ package com.mathieu.job_tracker.services;
 import com.mathieu.job_tracker.dto.ApplicationResponseDto;
 import com.mathieu.job_tracker.dto.StatusCreateDto;
 import com.mathieu.job_tracker.dto.StatusResponseDto;
+import com.mathieu.job_tracker.exceptions.ResourceNotFoundException;
 import com.mathieu.job_tracker.models.Status;
 import com.mathieu.job_tracker.models.Application;
 import com.mathieu.job_tracker.repositories.StatusRepository;
@@ -33,7 +34,7 @@ public class StatusService {
         // Get the id from dto and check if there is an existing application
         // If not throw error
         Application application = applicationRepository.findById(dto.getApplicationId())
-        .orElseThrow(() -> new RuntimeException("Cette candidature n'existe pas."));
+        .orElseThrow(() -> new ResourceNotFoundException("Cette candidature n'existe pas."));
 
 
         // Create a new status entity
