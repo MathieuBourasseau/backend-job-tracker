@@ -20,4 +20,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleEmailAlreadyExists(EmailAlreadyExistsException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
+
+    // Exception and JSON response in case of failure while trying to login
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<String> handleInvalidCredentials(InvalidCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
 }
