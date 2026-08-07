@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.Claims;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -29,6 +30,23 @@ public class JwtUtil {
                 .expiration(expiration)
                 .signWith(key)
                 .compact();
+    }
+
+    // Verify the token
+    public Long extractUserId(String token){
+
+        // Same secret key as the one used to sign the token, needed to verify its signature
+        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
+
+        // Verifies the signature and expiration, then reads the payload
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        
+        // Convert the String id into Long because it's required for DB
+        return Long.parseLong(claims.getSubject());
     }
 
 }
