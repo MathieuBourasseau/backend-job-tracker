@@ -14,4 +14,11 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/auth")
 public class AuthController {
     
+    // Service required for login function
+    private final AuthService authService;
+
+    // Constructor
+    public AuthController(AuthService authService){
+        this.authService = authService;
+    }
 }
