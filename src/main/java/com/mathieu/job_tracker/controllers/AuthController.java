@@ -21,4 +21,11 @@ public class AuthController {
     public AuthController(AuthService authService){
         this.authService = authService;
     }
+
+    // POST route to log a user 
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> logUser(@Valid @RequestBody LoginCreateDto dto){
+        LoginResponseDto user = authService.login(dto);
+        return ResponseEntity.ok(user);
+    }
 }
