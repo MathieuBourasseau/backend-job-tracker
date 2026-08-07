@@ -42,13 +42,8 @@ public class AuthService {
             throw new InvalidCredentialsException("Email ou mot de passe inccorect");
         }
 
-        
-
-
-
-
-        // Vérifier s'ils correspondent en base de données si l'un ou l'autre est faux on crée une new InvalidCredentialsException.java avec le message approprié
-        // Si ca correspond on créé le token avec le secret pet la signature
-        // Renvoyer le token vers le front 
+        // Generate token and return it to the front
+        String token = jwtUtil.generateToken(user.getId());
+        return new LoginResponseDto(token, user.getEmail(), user.getId());
     }
 }
