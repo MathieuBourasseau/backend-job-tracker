@@ -17,6 +17,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,4 +55,23 @@ class UserServiceTest {
         assertEquals("test@test.com", result.getEmail());
         assertEquals(1L, result.getId());
     }
+
+    @Test
+    void createUser_shouldFail_whenEmailIsAlreadyTaken(){
+
+        // Arrange create dto and user existing
+        UserCreateDto dto = new UserCreateDto("test@test.com", "password123");
+
+        // Arrange user already existing
+        User existingUser = new User("test@test.com", "hashedPassword");
+
+        // Simulate "this email already exists in the database" (opposite of the first test)
+        when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(existingUser));
+
+        // Act + Assert combined: calling createUser(dto) should throw, so there is no normal
+        // result to check afterward — the assertion itself performs the call and checks
+        // that it fails with the exact expected exception type
+        assertThrows(EmailAlreadyExistsException.class, () -> userService.createUser(dto));
+    }
+
 }
