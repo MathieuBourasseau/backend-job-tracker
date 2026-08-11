@@ -139,11 +139,16 @@ public class ApplicationService {
 
     // --- GET APPLICATION BY ID METHOD --- 
 
-    public ApplicationResponseDto getApplicationById(Long id){
+    public ApplicationResponseDto getApplicationById(Long userId, Long id){
 
         // Checking the id
         Application application = applicationRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Candidature non trouvée"));
+
+        // Checking that application user id matches with the current user logged
+        if(!application.getUser().getId().equals(userId)){
+            throw new ResourceNotFoundException("Candidature non trouvée");
+        }
 
         // Get statuses of this application and convert it in StatusResponseDto
         List<Status> listStatus = statusRepository.findByApplicationId(id);
