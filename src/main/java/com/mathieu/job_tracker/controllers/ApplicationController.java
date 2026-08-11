@@ -42,8 +42,9 @@ public class ApplicationController {
 
     // GET route to get an application by its id
     @GetMapping("/{applicationId}")
-    public ResponseEntity<ApplicationResponseDto> getApplicationById(@PathVariable Long applicationId){
-        ApplicationResponseDto selectedApplication = applicationService.getApplicationById(applicationId);
+    public ResponseEntity<ApplicationResponseDto> getApplicationById(Authentication authentication, @PathVariable Long applicationId){
+        Long userId = (Long) authentication.getPrincipal();
+        ApplicationResponseDto selectedApplication = applicationService.getApplicationById(userId, applicationId);
         return ResponseEntity.ok(selectedApplication);
     }
 
