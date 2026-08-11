@@ -246,11 +246,16 @@ public class ApplicationService {
 
     // --- DELETE APPLICATION METHOD ---
     
-    public void deleteApplication(Long id){
+    public void deleteApplication(Long userId, Long id){
 
         // Find existing candidature
         Application existingApplication = applicationRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Candidature non trouvée."));
+
+        // Checking if user application id matches with token userId
+        if(!existingApplication.getUser().getId().equals(userId)){
+            throw new ResourceNotFoundException("Candidature non trouvée");
+        }
 
         // Find all status
         List<Status> listStatus = statusRepository.findByApplicationId(id);
