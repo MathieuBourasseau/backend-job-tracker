@@ -58,8 +58,9 @@ public class ApplicationController {
 
     // DELETE route to delete an application
     @DeleteMapping("/{applicationId}")
-    public ResponseEntity<Void> deleteApplication(@PathVariable Long applicationId){
-        applicationService.deleteApplication(applicationId);
+    public ResponseEntity<Void> deleteApplication(Authentication authentication, @PathVariable Long applicationId){
+        Long userId = (Long) authentication.getPrincipal();
+        applicationService.deleteApplication(userId, applicationId);
         return ResponseEntity.noContent().build();
     }
 }
