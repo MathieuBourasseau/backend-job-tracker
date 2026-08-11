@@ -188,7 +188,7 @@ public class ApplicationService {
 
     //  --- UPDATE APPLICATION METHOD --- 
 
-    public ApplicationResponseDto updateApplication(Long, userId, Long id, ApplicationCreateDto dto){
+    public ApplicationResponseDto updateApplication(Long userId, Long id, ApplicationCreateDto dto){
 
         // Find the existing application, or fail if it doesn't exist
         Application existingApplication = applicationRepository.findById(id)
