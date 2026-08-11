@@ -50,8 +50,9 @@ public class ApplicationController {
 
     // PUT route to update an application
     @PutMapping("/{applicationId}")
-    public ResponseEntity<ApplicationResponseDto> updateApplication(@PathVariable Long applicationId, @Valid @RequestBody ApplicationCreateDto dto){
-        ApplicationResponseDto updatedApplication = applicationService.updateApplication(applicationId, dto);
+    public ResponseEntity<ApplicationResponseDto> updateApplication(Authentication authentication, @PathVariable Long applicationId, @Valid @RequestBody ApplicationCreateDto dto){
+        Long userId = (Long) authentication.getPrincipal();
+        ApplicationResponseDto updatedApplication = applicationService.updateApplication(userId, applicationId, dto);
         return ResponseEntity.ok(updatedApplication);
     }
 
