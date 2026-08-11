@@ -29,12 +29,17 @@ public class StatusService {
 
     // --- METHOD TO ADD CREATE A NEW STATUS ---
 
-    public ApplicationResponseDto createStatus(StatusCreateDto dto){
+    public ApplicationResponseDto createStatus(Long userId, StatusCreateDto dto){
 
         // Get the id from dto and check if there is an existing application
         // If not throw error
         Application application = applicationRepository.findById(dto.getApplicationId())
         .orElseThrow(() -> new ResourceNotFoundException("Cette candidature n'existe pas."));
+
+        // Checking before to create a new status that the current user corresponding to the application found
+        if(!application.getUser().getId().equals(userId)){
+            throw new ResourceNotFoundException("Candidature non trouvée");
+        })
 
 
         // Create a new status entity
