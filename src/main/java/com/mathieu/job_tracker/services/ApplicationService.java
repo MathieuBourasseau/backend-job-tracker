@@ -188,11 +188,16 @@ public class ApplicationService {
 
     //  --- UPDATE APPLICATION METHOD --- 
 
-    public ApplicationResponseDto updateApplication(Long id, ApplicationCreateDto dto){
+    public ApplicationResponseDto updateApplication(Long, userId, Long id, ApplicationCreateDto dto){
 
         // Find the existing application, or fail if it doesn't exist
         Application existingApplication = applicationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Candidature non trouvée"));
+
+        // Checking the userId of the application with the token userId
+        if(!existingApplication.getUser().getId().equals(userId)){
+            throw new ResourceNotFoundException("Candidature non trouvée");
+        }
 
         // Find or create the company from the updated dto
         Company company = companyRepository.findByName(dto.getCompanyName())
