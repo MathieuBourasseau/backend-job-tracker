@@ -39,7 +39,7 @@ public class StatusService {
         // Checking before to create a new status that the current user corresponding to the application found
         if(!application.getUser().getId().equals(userId)){
             throw new ResourceNotFoundException("Candidature non trouvée");
-        })
+        }
 
 
         // Create a new status entity
