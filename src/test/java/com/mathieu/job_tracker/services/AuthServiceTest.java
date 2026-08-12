@@ -77,7 +77,7 @@ public class AuthServiceTest {
              assertEquals(1L, result.getId());
     }
 
-    // --- LOGIN FAIL TEST --- 
+    // --- LOGIN FAIL TEST IN CASE OF WRONG EMAIL --- 
     @Test
     void login_shouldFail_whenEmailIsNotFound(){
 
@@ -94,5 +94,29 @@ public class AuthServiceTest {
 
             // Calling login(dto) should throw an InvalidCredentialsException when no mail is found
             assertThrows(InvalidCredentialsException.class, () -> authService.login(dto));
+    }
+
+    // --- LOGIN FAIL TEST IN CASE OF WRONG PASSWORD --- 
+    @Test
+    void login_shouldFail_WhenPasswordIsNotFound(){
+        
+         // Assert data required : createDto, existing user, email valid, wrong password
+
+            // LoginCreateDto
+            LoginCreateDto dto = new LoginCreateDto("test@test.com", "password123");
+
+            // Existing user
+            User existingUser = new User("test@test.com", "hashedPassword");
+
+            // Simulate a valid email
+            when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(existingUser));
+
+            // Hashed password
+            when(passwordEncoder.matches("password123","hashedPassword")).thenReturn(false);
+
+            // Act and assert
+
+                // Calling login(dto) should throw an InvalidCredentialException
+                assertThrows(InvalidCredentialsException.class, () -> authService.login(dto));
     }
 }
