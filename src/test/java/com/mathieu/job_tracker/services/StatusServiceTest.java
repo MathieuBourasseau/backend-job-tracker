@@ -92,7 +92,7 @@ public class StatusServiceTest {
             assertEquals("A faire", result.getStatuses().get(0).getState());
     }
 
-    // --- CREATESTATUS FAILS BECAUSE OF NOT FOUND APPLICATION TEST ---
+    // --- CREATESTATUS FAILS BECAUSE OF NOT FOUND APPLICATION ID TEST ---
     @Test
     void createStatus_shouldFail_WhenApplicationIsNotFound(){
 
@@ -109,5 +109,38 @@ public class StatusServiceTest {
             // When createStatus method is called with a wrong application Id, it should throw a ResourceNotFoundException
             assertThrows(ResourceNotFoundException.class, () -> statusService.createStatus(1L,dto));
     }
+    
+    // --- CREATESTATUS FAILS BECAUSE USER ID LOGGED DOESN'T MATCH WITH USER ID APPLICATION ---
+    @Test
+    void createStatus_shouldFail_WhenUserIdApplicationIsNotFound(){
 
+        // Arrange data required: statusCreateDto, existing user, existing company, existing application
+
+            // statusCreateDto
+            StatusCreateDto dto = new StatusCreateDto("A faire", 1L);
+
+            // Existing user
+            User user = new User("test@test.com", "password123");
+            ReflectionTestUtils.setField(user, "id", 1L);
+
+            // Existing company
+            Company company = new Company("Altis", "Prestataire de service informatique");
+
+            // Existing application
+            Application existingApplication = new Application(
+                "link", "contact", "jobTitle", "location", 1000, "CDI",
+                new java.sql.Date(System.currentTimeMillis()),
+                null, null, false, null,
+                user, company
+            );
+            ReflectionTestUtils.setField(existingApplication, "id", 1L);
+
+            // Find application by id get the existing application
+            when(applicationRepository.findById(1L)).thenReturn(Optional.of(existingApplication));
+
+        // Act and assert: 
+
+            // When createStatus is called with a wrong user application id, it should throw a ResourceNotFoundException
+            assertThrows(ResourceNotFoundException.class, () -> statusService.createStatus(2L, dto));
+    }
 }
