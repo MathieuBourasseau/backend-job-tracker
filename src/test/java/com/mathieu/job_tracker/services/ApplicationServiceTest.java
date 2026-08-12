@@ -3,6 +3,9 @@ package com.mathieu.job_tracker.services;
 import com.mathieu.job_tracker.dto.ApplicationCreateDto;
 import com.mathieu.job_tracker.dto.ApplicationResponseDto;
 import com.mathieu.job_tracker.exceptions.ResourceNotFoundException;
+import com.mathieu.job_tracker.models.Application;
+import com.mathieu.job_tracker.models.Company;
+import com.mathieu.job_tracker.models.Status;
 import com.mathieu.job_tracker.models.User;
 import com.mathieu.job_tracker.repositories.ApplicationRepository;
 import com.mathieu.job_tracker.repositories.CompanyRepository;
@@ -47,5 +50,70 @@ public class ApplicationServiceTest {
         // Create ApplicationServiceTest
         @InjectMocks
         private ApplicationService applicationService;
+
     
+    // --- TEST : CREATEAPPLICATION METHOD SUCCEEDS ---
+    @Test
+    void createApplication_shouldSucceed_WhenUserAndCompanyAreValid(){
+
+        // Arrange data required
+
+            // ApplicationCreateDto
+            ApplicationCreateDto dto = new ApplicationCreateDto(
+                "link", "contact", "jobTitle", "location", 1000, "CDI",
+                new java.sql.Date(System.currentTimeMillis()),
+                "Acme", "Tech"
+            );
+
+            // Existing user
+            User existingUser = new User("test@test.com", "hashedPassword");
+            ReflectionTestUtils.setField(existingUser, "id", 1L);
+
+            // Existing company
+            Company existingCompany = new Company("Acme","Prestation de service informatique");
+            ReflectionTestUtils.setField(existingCompany, "id", 1L);
+
+            // First check succeeding by returning user by id
+            when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
+
+            // Second check succeeding by returning company by its name
+            when(companyRepository.findByName("Acme")).thenReturn(Optional.of(existingCompany));
+
+            // Simulate the application that should be returned by save
+            Application savedApplication = new Application(
+                "link", "contact", "jobTitle", "location", 1000, "CDI",
+                new java.sql.Date(System.currentTimeMillis()),
+                null, null, false, null,
+                existingUser, existingCompany
+            );
+            ReflectionTestUtils.setField(savedApplication, "id", 1L);
+
+            when(applicationRepository.save(org.mockito.ArgumentMatchers.any(Application.class))).thenReturn(savedApplication);
+
+            // Simulate the status that should be returned by save
+            Status savedStatus = new Status("A faire", new java.sql.Timestamp(System.currentTimeMillis()), savedApplication);
+            ReflectionTestUtils.setField(savedStatus, "id", 1L);
+
+            when(statusRepository.save(org.mockito.ArgumentMatchers.any(Status.class))).thenReturn(savedStatus);
+        
+        // Act : by using createApplication method
+            
+            ApplicationResponseDto result = applicationService.createApplication(dto, 1L);
+        
+        // Assert : return essential data from dto
+            
+            // Application id
+            assertEquals(1L, result.getId());
+
+            // Job title
+            assertEquals("jobTitle", result.getJobTitle());
+
+            // Company Name
+            assertEquals("Acme", result.getCompanyName());
+
+            // List of statuses
+            assertEquals(1, result.getStatuses().size());
+            assertEquals("A faire", result.getStatuses().get(0).getState());
+
+    }
 }
