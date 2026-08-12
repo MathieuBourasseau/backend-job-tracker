@@ -92,4 +92,22 @@ public class StatusServiceTest {
             assertEquals("A faire", result.getStatuses().get(0).getState());
     }
 
+    // --- CREATESTATUS FAILS BECAUSE OF NOT FOUND APPLICATION TEST ---
+    @Test
+    void createStatus_shouldFail_WhenApplicationIsNotFound(){
+
+        // Arrange data required : StatusCreateDto, mock FindById
+
+            // Create the StatusCreateDto
+            StatusCreateDto dto = new StatusCreateDto("A faire", 1L);
+
+            // Find application by id
+            when(applicationRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Act and Assert : 
+
+            // When createStatus method is called with a wrong application Id, it should throw a ResourceNotFoundException
+            assertThrows(ResourceNotFoundException.class, () -> statusService.createStatus(1L,dto));
+    }
+
 }
