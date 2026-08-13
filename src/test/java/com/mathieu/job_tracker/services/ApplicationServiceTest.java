@@ -254,4 +254,18 @@ public class ApplicationServiceTest {
             assertEquals(1, result.getStatuses().size());
             assertEquals("A faire", result.getStatuses().get(0).getState());
     }
+
+    // --- TEST : GETAPPLICATIONBYID SHOULD FAIL WHEN APPLICATION ID IS NOT FOUND --- 
+    @Test
+    void getApplicationById_shouldFail_WhenApplicationIdIsNotFound(){
+
+        // Arrange data 
+
+            when(applicationRepository.findById(2L)).thenReturn(Optional.empty());
+        
+        // Act and assert : when getApplicationById is called with a wrong application id, it should throw ResourceNotFoundException
+            
+            assertThrows(ResourceNotFoundException.class, () -> applicationService.getApplicationById(1L,2L));
+    }
+
 }
