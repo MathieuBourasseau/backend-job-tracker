@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -122,16 +123,80 @@ public class ApplicationServiceTest {
     void createApplication_shouldFail_WhenUserIdIsNotFound(){
 
         // Arrange date required : ApplicationCreateDto 
-        ApplicationCreateDto dto = new ApplicationCreateDto(
+
+            // DTO
+            ApplicationCreateDto dto = new ApplicationCreateDto(
+                    "link", "contact", "jobTitle", "location", 1000, "CDI",
+                    new java.sql.Date(System.currentTimeMillis()),
+                    "Acme", "Tech"
+                );
+        
+            // Find user by id
+            when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        
+        // Act and assert
+
+            // When createApplication is called with wrong userId, it should throw ResourceNotFoundException
+            assertThrows(ResourceNotFoundException.class, () -> applicationService.createApplication(dto, 1L));
+    }
+
+    // --- TEST : GETUSERAPPLICATION SHOULD SUCCEED WITH A VALID USERID --- 
+
+    @Test
+    void getUserApplication_shouldSucceed_whenUserIdIsValid(){
+
+        // Arrange data required
+
+            // Existing list of applications
+            User user = new User("test@test.com", "hashedPassword");
+            ReflectionTestUtils.setField(user, "id", 1L);
+
+            Company company = new Company("Acme", "Tech");
+            ReflectionTestUtils.setField(company, "id", 1L);
+
+            Application application = new Application(
                 "link", "contact", "jobTitle", "location", 1000, "CDI",
                 new java.sql.Date(System.currentTimeMillis()),
-                "Acme", "Tech"
+                null, null, false, null,
+                user, company
             );
-        
-        // Find user by id
-        when(userRepository.findById(1L)).thenReturn(Optional.empty());
-        
-        // When createApplication is called with wrong userId, it should throw ResourceNotFoundException
-        assertThrows(ResourceNotFoundException.class, () -> applicationService.createApplication(dto, 1L));
+            ReflectionTestUtils.setField(application, "id", 1L);
+
+            List<Application> applications = List.of(application);
+
+            // Existing list of statuses
+            Status status = new Status("A faire", new java.sql.Timestamp(System.currentTimeMillis()), application);
+            ReflectionTestUtils.setField(status, "id", 1L);
+
+            List<Status> statuses = List.of(status);
+
+            // Find list of applications with userId
+            when(applicationRepository.findByUserId(1L)).thenReturn(applications);
+
+            // Find list of statuses with applicationId
+            when(statusRepository.findByApplicationId(1L)).thenReturn(statuses);
+
+        // Act : when getUserApplication(userId) is called
+
+            List<ApplicationResponseDto> result = applicationService.getUserApplications(1L);
+
+        // Assert
+
+            // Number of applications returned
+            assertEquals(1, result.size());
+
+            // Application id
+            assertEquals(1L, result.get(0).getId());
+
+            // Job title
+            assertEquals("jobTitle", result.get(0).getJobTitle());
+
+            // Company name
+            assertEquals("Acme", result.get(0).getCompanyName());
+
+            // Statuses
+            assertEquals(1, result.get(0).getStatuses().size());
+            assertEquals("A faire", result.get(0).getStatuses().get(0).getState());
+
     }
 }
