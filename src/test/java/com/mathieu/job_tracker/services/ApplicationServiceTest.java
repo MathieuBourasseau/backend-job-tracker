@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -424,5 +425,47 @@ public class ApplicationServiceTest {
         // Act and assert : when userId is not found, it should throw ResourceNotFoundException
 
             assertThrows(ResourceNotFoundException.class, () -> applicationService.updateApplication(2L, 1L, dto));
+    }
+
+    // --- TEST : DELETEAPPLICATION SUCCESS WITH VALID USER AND APPLICATION ID --- 
+    @Test
+    void deleteApplication_shouldSucceed_WhenApplicationAndUserAreValid(){
+
+        // Arrange data required
+
+            // Existing user -> required to create an application
+            User existingUser = new User("test@test.com", "hashedPassword");
+            ReflectionTestUtils.setField(existingUser, "id", 1L);
+
+            // Existing company -> required to create an application
+            Company existingCompany = new Company("Acme", "Tech");
+            ReflectionTestUtils.setField(existingCompany, "id", 1L);
+
+            // Existing application -> required to mock applicationRepository
+            Application existingApplication = new Application(
+                "link", "contact", "jobTitle", "location", 1000, "CDI",
+                new java.sql.Date(System.currentTimeMillis()),
+                null, null, false, null,
+                existingUser, existingCompany
+            );
+            ReflectionTestUtils.setField(existingApplication, "id", 1L);
+
+            // Existing status -> required to mock statusRepository
+            Status savedStatus = new Status("A faire", new java.sql.Timestamp(System.currentTimeMillis()), existingApplication);
+            ReflectionTestUtils.setField(savedStatus, "id", 1L);
+
+            List<Status> statuses = List.of(savedStatus);
+
+            when(applicationRepository.findById(1L)).thenReturn(Optional.of(existingApplication));
+
+            when(statusRepository.findByApplicationId(1L)).thenReturn(statuses);
+        
+        // Act : Calling deleteApplication
+            
+            applicationService.deleteApplication(1L, 1L);
+
+        // Assert : verify that applicationRepository.delete has been called and execute
+            verify(statusRepository).deleteAll(statuses);
+            verify(applicationRepository).delete(existingApplication);
     }
 }
