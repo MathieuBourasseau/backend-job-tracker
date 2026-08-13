@@ -197,6 +197,61 @@ public class ApplicationServiceTest {
             // Statuses
             assertEquals(1, result.get(0).getStatuses().size());
             assertEquals("A faire", result.get(0).getStatuses().get(0).getState());
+    }
 
+    // --- TEST : GETAPPLICATIONBYID SHOULD SUCCEED WITH A VALID APPLICATION ID --- 
+    @Test
+    void getApplicationById_shouldSucceed_WhenApplicationIdIsValid(){
+
+        // Arrange data required : 
+
+            // Existing user -> needed because we have to create an existing application and the user id is compared to userId in parameter
+            User existingUser = new User("test@test.com", "hashedPassword");
+            ReflectionTestUtils.setField(existingUser, "id", 1L);
+
+            // Existing company -> required by the Application constructor
+            Company existingCompany = new Company("Acme", "Tech");
+            ReflectionTestUtils.setField(existingCompany, "id", 1L);
+
+            // Existing application -> needed because it used to mocked applicationRepository
+            Application existingApplication = new Application(
+                "link", "contact", "jobTitle", "location", 1000, "CDI",
+                new java.sql.Date(System.currentTimeMillis()),
+                null, null, false, null,
+                existingUser, existingCompany
+            );
+            ReflectionTestUtils.setField(existingApplication, "id", 1L);
+
+            // Existing status + List of statuses -> needed to mock statusRepository
+            Status status = new Status("A faire", new java.sql.Timestamp(System.currentTimeMillis()), existingApplication);
+            ReflectionTestUtils.setField(status, "id", 1L);
+
+            List<Status> statuses = List.of(status);
+
+            when(applicationRepository.findById(1L)).thenReturn(Optional.of(existingApplication));
+
+            when(statusRepository.findByApplicationId(1L)).thenReturn(statuses);
+
+        // Act : when getApplicationById is called
+            
+            ApplicationResponseDto result = applicationService.getApplicationById(1L, 1L);
+
+        // Assert : test should succeed and return the selected application
+            
+            // Application id
+            assertEquals(1L, result.getId());
+
+            // Job title
+            assertEquals("jobTitle", result.getJobTitle());
+
+            // Company Name
+            assertEquals("Acme", result.getCompanyName());
+
+            // Activity
+            assertEquals("Tech", result.getCompanyActivity());
+
+            // Statuses
+            assertEquals(1, result.getStatuses().size());
+            assertEquals("A faire", result.getStatuses().get(0).getState());
     }
 }
