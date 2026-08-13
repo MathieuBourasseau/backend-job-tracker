@@ -114,6 +114,24 @@ public class ApplicationServiceTest {
             // List of statuses
             assertEquals(1, result.getStatuses().size());
             assertEquals("A faire", result.getStatuses().get(0).getState());
+    }
 
+    // --- TEST : CREATEAPPLICATION SHOULD FAIL WHEN USER ID IS NOT FOUND --- 
+
+    @Test
+    void createApplication_shouldFail_WhenUserIdIsNotFound(){
+
+        // Arrange date required : ApplicationCreateDto 
+        ApplicationCreateDto dto = new ApplicationCreateDto(
+                "link", "contact", "jobTitle", "location", 1000, "CDI",
+                new java.sql.Date(System.currentTimeMillis()),
+                "Acme", "Tech"
+            );
+        
+        // Find user by id
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        
+        // When createApplication is called with wrong userId, it should throw ResourceNotFoundException
+        assertThrows(ResourceNotFoundException.class, () -> applicationService.createApplication(dto, 1L));
     }
 }
