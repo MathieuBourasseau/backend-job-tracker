@@ -297,4 +297,78 @@ public class ApplicationServiceTest {
             
             assertThrows(ResourceNotFoundException.class, ()-> applicationService.getApplicationById(2L, 1L));
     }
+
+    // --- TEST : UPDATEAPPLICATION SHOULD SUCCEED WHEN APPLICATION AND USER ARE VALID ---
+    @Test
+    void updateApplication_shouldSucceed_WhenApplicationAndUserAreValid(){
+
+        // Arrange data required
+
+            // dto
+            ApplicationCreateDto dto = new ApplicationCreateDto(
+                "link", "contact", "jobTitle", "location", 1000, "CDI",
+                new java.sql.Date(System.currentTimeMillis()),
+                "Acme", "Tech"
+            );
+
+            // Existing user -> required to create application
+             User existingUser = new User("test@test.com", "hashedPassword");
+            ReflectionTestUtils.setField(existingUser, "id", 1L);
+
+            // Existing company -> required to create application + mock companyRepository
+            Company existingCompany = new Company("Acme", "Tech");
+            ReflectionTestUtils.setField(existingCompany, "id", 1L);
+
+            // Existing application -> required because the application id is valid
+             Application existingApplication = new Application(
+                "link", "contact", "jobTitle", "location", 1000, "CDI",
+                new java.sql.Date(System.currentTimeMillis()),
+                null, null, false, null,
+                existingUser, existingCompany
+            );
+            ReflectionTestUtils.setField(existingApplication, "id", 1L);
+
+            // Saved application -> required to mock applicationRepository
+             Application savedApplication = new Application(
+                "link", "contact", "jobTitle", "location", 1000, "CDI",
+                new java.sql.Date(System.currentTimeMillis()),
+                null, null, false, null,
+                existingUser, existingCompany
+            );
+            ReflectionTestUtils.setField(savedApplication, "id", 1L);
+
+            // Existing status + List of statuses
+            Status savedStatus = new Status("A faire", new java.sql.Timestamp(System.currentTimeMillis()), savedApplication);
+            ReflectionTestUtils.setField(savedStatus, "id", 1L);
+
+            List<Status> statuses = List.of(savedStatus);
+
+            when(applicationRepository.findById(1L)).thenReturn(Optional.of(existingApplication));
+
+            when(companyRepository.findByName("Acme")).thenReturn(Optional.of(existingCompany));
+
+            when(applicationRepository.save(org.mockito.ArgumentMatchers.any(Application.class))).thenReturn(savedApplication);
+
+            when(statusRepository.findByApplicationId(savedApplication.getId())).thenReturn(statuses);
+
+        // Act : when updateApplication is called with valid application and user id
+
+            ApplicationResponseDto result = applicationService.updateApplication(1L, 1L, dto);
+
+        // Assert :
+
+            // Application id
+            assertEquals(1L, result.getId());
+
+            // Job title
+            assertEquals("jobTitle", result.getJobTitle());
+
+            // Company name
+            assertEquals("Acme", result.getCompanyName());
+
+            // Statuses
+            assertEquals(1, result.getStatuses().size());
+            assertEquals("A faire", result.getStatuses().get(0).getState());
+
+    }
 }
