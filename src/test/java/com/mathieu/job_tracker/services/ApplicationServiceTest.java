@@ -427,7 +427,7 @@ public class ApplicationServiceTest {
             assertThrows(ResourceNotFoundException.class, () -> applicationService.updateApplication(2L, 1L, dto));
     }
 
-    // --- TEST : DELETEAPPLICATION SUCCESS WITH VALID USER AND APPLICATION ID --- 
+    // --- TEST : DELETEAPPLICATION SUCCEEDS WITH VALID USER AND APPLICATION ID --- 
     @Test
     void deleteApplication_shouldSucceed_WhenApplicationAndUserAreValid(){
 
@@ -467,5 +467,22 @@ public class ApplicationServiceTest {
         // Assert : verify that applicationRepository.delete has been called and execute
             verify(statusRepository).deleteAll(statuses);
             verify(applicationRepository).delete(existingApplication);
+    }
+
+    // --- TEST : DELETEAPPLICATION FAILS WITH WRONG APPLICATION ID --- 
+    @Test
+    void deleteApplication_shouldFail_WhenApplicationIdIsWrong(){
+
+        // Arrange date required
+        when(applicationRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Act and assert : when application id is wrong, it should throw ResourceNotFoundException
+        assertThrows(ResourceNotFoundException.class, () -> applicationService.deleteApplication(1L, 1L));
+    }
+
+    // --- TEST : DELETE APPLICATION FAILS WITH WRONG USER ID --- 
+    @Test
+    void deleteApplication_shouldFail_WhenUserIdIsWrong(){
+        
     }
 }
