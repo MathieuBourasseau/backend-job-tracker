@@ -29,8 +29,7 @@ public class ApplicationService {
     private final StatusRepository statusRepository;
 
     // ApplicationService needs ApplicationRepository to work
-    public ApplicationService(ApplicationRepository applicationRepository, UserRepository userRepository,
-            CompanyRepository companyRepository, StatusRepository statusRepository) {
+    public ApplicationService(ApplicationRepository applicationRepository, UserRepository userRepository,CompanyRepository companyRepository, StatusRepository statusRepository) {
         this.applicationRepository = applicationRepository;
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
