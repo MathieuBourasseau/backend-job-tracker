@@ -1,6 +1,6 @@
 # Job Tracker — Back-end
 
-> 🚧 **Projet en cours de développement.** Ce dépôt contient uniquement le back-end pour le moment (le front-end React/TypeScript sera développé séparément). Les tests automatisés sont encore en cours d'écriture — voir la section [Roadmap](#roadmap).
+> 🚧 **Projet en cours de développement.** Ce dépôt contient uniquement le back-end pour le moment (le front-end React/TypeScript sera développé séparément). Les tests unitaires sont terminés, les tests d'intégration restent à écrire — voir la section [Roadmap](#roadmap).
 
 Application de suivi de candidatures (recherche d'emploi/alternance), pensée pour remplacer un suivi manuel type Excel. Projet personnel de portfolio, développé pour démontrer une maîtrise de Java/Spring Boot sur un projet complet : authentification, CRUD, relations de données, logique métier.
 
@@ -23,10 +23,12 @@ Application de suivi de candidatures (recherche d'emploi/alternance), pensée po
 - Historique des statuts (`Status`) horodaté et consultable, jamais écrasé — chaque changement de statut ajoute une nouvelle entrée
 - Validation des données d'entrée (Bean Validation) sur les routes de création
 - Gestion centralisée des erreurs (`@RestControllerAdvice`)
+- Tests unitaires (JUnit 5 + Mockito) sur l'ensemble des Services
 
 ### À venir
 - Relances automatiques (signalement à J+7 sans réponse)
-- Suite de tests automatisés complète (unitaires en cours, intégration à venir)
+- Modification de l'entretien obtenu, de la raison de refus et des dates de relance sur une candidature (champs déjà présents en base, pas encore exposés côté DTO/API)
+- Tests d'intégration
 
 ## Modèle de données
 
@@ -70,6 +72,6 @@ Modélisation complète (MCD, MLD, MPD, dictionnaire de données) disponible dan
 1. ~~Modélisation, entités, repositories, DTOs, services, controllers, validation~~
 2. ~~Gestion centralisée des erreurs~~
 3. ~~Authentification (Spring Security + JWT)~~
-4. Tests automatisés (unitaires en cours, intégration à venir)
+4. Tests automatisés (~~unitaires~~, intégration à venir)
 5. Front-end (React/TypeScript) — dépôt séparé
 6. Déploiement (Render + Vercel)
