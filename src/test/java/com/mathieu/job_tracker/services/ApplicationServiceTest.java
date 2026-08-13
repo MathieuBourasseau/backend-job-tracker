@@ -371,7 +371,7 @@ public class ApplicationServiceTest {
             assertEquals("A faire", result.getStatuses().get(0).getState());
     }
 
-    // --- TEST : UPDATEAPPLICATION SHOULD FAIL WHEN APPLICATION ID IS NOT FOUND
+    // --- TEST : UPDATEAPPLICATION SHOULD FAIL WHEN APPLICATION ID IS NOT FOUND ---
     @Test
     void updateApplication_shouldFail_WhenApplicationIdIsNotFOund(){
 
@@ -386,5 +386,43 @@ public class ApplicationServiceTest {
 
         // Act and assert : when application is not valid, it should throw ResourceNotFoundException
         assertThrows(ResourceNotFoundException.class,() -> applicationService.updateApplication(1L, 1L, dto));
+    }
+
+    // --- TEST : UPDATEAPPLICATION SHOULD FAIL WHEN USER ID IS NOT FOUND --- 
+    @Test
+    void updateApplication_shouldFail_whenUserIdIsNotFound(){
+
+        // Arrange data required
+
+            // dto
+            ApplicationCreateDto dto = new ApplicationCreateDto(
+                "link", "contact", "jobTitle", "location", 1000, "CDI",
+                new java.sql.Date(System.currentTimeMillis()),
+                "Acme", "Tech"
+            );
+
+            // Existing user -> required to create application
+            User existingUser = new User("test@test.com", "hashedPassword");
+            ReflectionTestUtils.setField(existingUser, "id", 1L);
+
+            // Existing company -> required to create application
+            Company existingCompany = new Company("Acme", "Tech");
+            ReflectionTestUtils.setField(existingCompany, "id", 1L);
+
+            // Existing application -> required because the application id is valid
+             Application existingApplication = new Application(
+                "link", "contact", "jobTitle", "location", 1000, "CDI",
+                new java.sql.Date(System.currentTimeMillis()),
+                null, null, false, null,
+                existingUser, existingCompany
+            );
+            ReflectionTestUtils.setField(existingApplication, "id", 1L);
+
+            // mock applicationRepository
+            when(applicationRepository.findById(1L)).thenReturn(Optional.of(existingApplication));
+
+        // Act and assert : when userId is not found, it should throw ResourceNotFoundException
+
+            assertThrows(ResourceNotFoundException.class, () -> applicationService.updateApplication(2L, 1L, dto));
     }
 }
