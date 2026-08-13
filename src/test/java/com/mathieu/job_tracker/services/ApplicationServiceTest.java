@@ -484,5 +484,29 @@ public class ApplicationServiceTest {
     @Test
     void deleteApplication_shouldFail_WhenUserIdIsWrong(){
         
+        // Arrange date required 
+
+            // Existing user -> required to create application
+            User existingUser = new User("test@test.com", "hashedPassword");
+            ReflectionTestUtils.setField(existingUser, "id", 1L);
+
+            // Existing company -> required to create application
+            Company existingCompany = new Company("Acme", "Tech");
+            ReflectionTestUtils.setField(existingCompany, "id", 1L);
+
+            // Existing application -> required because application id is valid and found
+            Application existingApplication = new Application(
+                "link", "contact", "jobTitle", "location", 1000, "CDI",
+                new java.sql.Date(System.currentTimeMillis()),
+                null, null, false, null,
+                existingUser, existingCompany
+            );
+            ReflectionTestUtils.setField(existingApplication, "id", 1L);
+
+            // mock applicationRepository
+            when(applicationRepository.findById(1L)).thenReturn(Optional.of(existingApplication));
+
+        // Act and assert : when user id is wrong, it should throw ResourceNotFoundException
+            assertThrows(ResourceNotFoundException.class, () -> applicationService.deleteApplication(2L, 1L));
     }
 }
