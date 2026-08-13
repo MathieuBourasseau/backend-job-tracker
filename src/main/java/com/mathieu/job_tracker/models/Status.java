@@ -15,9 +15,10 @@ public class Status {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // State value is obligatory
-    @Column(nullable = false, length = 50)
-    private String state;
+    // State value is obligatory and limited with StatusState
+    @Enumerated(EnumType.STRING)
+    private StatusState state;
+
 
     // Date and time of the status change is obligatory
     @Column(nullable = false)
@@ -31,7 +32,7 @@ public class Status {
     // Constructors
     public Status() {}
 
-    public Status(String state, Timestamp date, Application application){
+    public Status(StatusState state, Timestamp date, Application application){
         this.state = state;
         this.date = date;
         this.application = application;
@@ -42,11 +43,11 @@ public class Status {
         return this.id;
     }
 
-    public String getState(){
+     public StatusState getState(){
         return this.state;
     }
 
-    public void setState(String state){
+    public void setState(StatusState state){
         this.state = state;
     }
 

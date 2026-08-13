@@ -7,6 +7,7 @@ import com.mathieu.job_tracker.exceptions.ResourceNotFoundException;
 import com.mathieu.job_tracker.models.Application;
 import com.mathieu.job_tracker.models.Company;
 import com.mathieu.job_tracker.models.Status;
+import com.mathieu.job_tracker.models.StatusState;
 import com.mathieu.job_tracker.models.User;
 import com.mathieu.job_tracker.repositories.ApplicationRepository;
 import com.mathieu.job_tracker.repositories.StatusRepository;
@@ -47,7 +48,7 @@ public class StatusServiceTest {
         // Arrange data required : StatusCreateDto, existing user, existing company,
         
             // StatusCreateDto
-            StatusCreateDto dto = new StatusCreateDto("A faire", 1L);
+            StatusCreateDto dto = new StatusCreateDto(StatusState.A_FAIRE, 1L);
 
             // Existing User
             User user = new User("test@test.com", "hashedPassword");
@@ -70,7 +71,7 @@ public class StatusServiceTest {
             when(applicationRepository.findById(1L)).thenReturn(Optional.of(existingApplication));
 
             // Simulate the status history read back after the new status is saved
-            Status savedStatus = new Status("A faire", new java.sql.Timestamp(System.currentTimeMillis()), existingApplication);
+            Status savedStatus = new Status(StatusState.A_FAIRE, new java.sql.Timestamp(System.currentTimeMillis()), existingApplication);
             ReflectionTestUtils.setField(savedStatus, "id", 1L);
             
             when(statusRepository.findByApplicationId(1L)).thenReturn(java.util.List.of(savedStatus));
@@ -89,7 +90,7 @@ public class StatusServiceTest {
 
             // Status history
             assertEquals(1, result.getStatuses().size());
-            assertEquals("A faire", result.getStatuses().get(0).getState());
+            assertEquals(StatusState.A_FAIRE, result.getStatuses().get(0).getState());
     }
 
     // --- CREATESTATUS FAILS BECAUSE OF NOT FOUND APPLICATION ID TEST ---
@@ -99,7 +100,7 @@ public class StatusServiceTest {
         // Arrange data required : StatusCreateDto, mock FindById
 
             // Create the StatusCreateDto
-            StatusCreateDto dto = new StatusCreateDto("A faire", 1L);
+            StatusCreateDto dto = new StatusCreateDto(StatusState.A_FAIRE, 1L);
 
             // Find application by id
             when(applicationRepository.findById(1L)).thenReturn(Optional.empty());
@@ -117,7 +118,7 @@ public class StatusServiceTest {
         // Arrange data required: statusCreateDto, existing user, existing company, existing application
 
             // statusCreateDto
-            StatusCreateDto dto = new StatusCreateDto("A faire", 1L);
+            StatusCreateDto dto = new StatusCreateDto(StatusState.A_FAIRE, 1L);
 
             // Existing user
             User user = new User("test@test.com", "password123");

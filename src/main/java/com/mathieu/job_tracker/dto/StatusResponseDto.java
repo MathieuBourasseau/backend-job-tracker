@@ -1,18 +1,20 @@
 package com.mathieu.job_tracker.dto;
 
+import com.mathieu.job_tracker.models.StatusState;
+
 import java.sql.Timestamp;
 
 public class StatusResponseDto {
-    
+
     // Data the backend chooses to provide to client
     private Long id;
-    private String state;
+    private StatusState state;
     private Timestamp date;
 
     // Constructors
     public StatusResponseDto() {}
 
-    public StatusResponseDto(Long id, String state, Timestamp date){
+    public StatusResponseDto(Long id, StatusState state, Timestamp date){
         this.id = id;
         this.state = state;
         this.date = date;
@@ -23,7 +25,7 @@ public class StatusResponseDto {
         return this.id;
     }
 
-    public String getState(){
+    public StatusState getState(){
         return this.state;
     }
 

@@ -8,6 +8,7 @@ import com.mathieu.job_tracker.exceptions.ResourceNotFoundException;
 import com.mathieu.job_tracker.models.Application;
 import com.mathieu.job_tracker.models.Company;
 import com.mathieu.job_tracker.models.Status;
+import com.mathieu.job_tracker.models.StatusState;
 import com.mathieu.job_tracker.models.User;
 import com.mathieu.job_tracker.repositories.ApplicationRepository;
 import com.mathieu.job_tracker.repositories.CompanyRepository;
@@ -59,7 +60,7 @@ public class ApplicationService {
         Application savedApplication = applicationRepository.save(newApplication);
 
         // Create the initial status entry ("A faire") for this application
-        Status initialStatus = new Status("A faire", new Timestamp(System.currentTimeMillis()), savedApplication);
+        Status initialStatus = new Status(StatusState.A_FAIRE, new Timestamp(System.currentTimeMillis()), savedApplication);
         Status savedStatus = statusRepository.save(initialStatus);
 
         List<StatusResponseDto> statuses = List.of(

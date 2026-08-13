@@ -7,6 +7,7 @@ import com.mathieu.job_tracker.exceptions.ResourceNotFoundException;
 import com.mathieu.job_tracker.models.Application;
 import com.mathieu.job_tracker.models.Company;
 import com.mathieu.job_tracker.models.Status;
+import com.mathieu.job_tracker.models.StatusState;
 import com.mathieu.job_tracker.models.User;
 import com.mathieu.job_tracker.repositories.ApplicationRepository;
 import com.mathieu.job_tracker.repositories.CompanyRepository;
@@ -94,7 +95,7 @@ public class ApplicationServiceTest {
             when(applicationRepository.save(org.mockito.ArgumentMatchers.any(Application.class))).thenReturn(savedApplication);
 
             // Simulate the status that should be returned by save
-            Status savedStatus = new Status("A faire", new java.sql.Timestamp(System.currentTimeMillis()), savedApplication);
+            Status savedStatus = new Status(StatusState.A_FAIRE, new java.sql.Timestamp(System.currentTimeMillis()), savedApplication);
             ReflectionTestUtils.setField(savedStatus, "id", 1L);
 
             when(statusRepository.save(org.mockito.ArgumentMatchers.any(Status.class))).thenReturn(savedStatus);
@@ -116,7 +117,7 @@ public class ApplicationServiceTest {
 
             // List of statuses
             assertEquals(1, result.getStatuses().size());
-            assertEquals("A faire", result.getStatuses().get(0).getState());
+            assertEquals(StatusState.A_FAIRE, result.getStatuses().get(0).getState());
     }
 
     // --- TEST : CREATEAPPLICATION SHOULD FAIL WHEN USER ID IS NOT FOUND --- 
@@ -167,7 +168,7 @@ public class ApplicationServiceTest {
             List<Application> applications = List.of(application);
 
             // Existing list of statuses
-            Status status = new Status("A faire", new java.sql.Timestamp(System.currentTimeMillis()), application);
+            Status status = new Status(StatusState.A_FAIRE, new java.sql.Timestamp(System.currentTimeMillis()), application);
             ReflectionTestUtils.setField(status, "id", 1L);
 
             List<Status> statuses = List.of(status);
@@ -198,7 +199,7 @@ public class ApplicationServiceTest {
 
             // Statuses
             assertEquals(1, result.get(0).getStatuses().size());
-            assertEquals("A faire", result.get(0).getStatuses().get(0).getState());
+            assertEquals(StatusState.A_FAIRE, result.get(0).getStatuses().get(0).getState());
     }
 
     // --- TEST : GETAPPLICATIONBYID SHOULD SUCCEED WITH A VALID APPLICATION ID --- 
@@ -225,7 +226,7 @@ public class ApplicationServiceTest {
             ReflectionTestUtils.setField(existingApplication, "id", 1L);
 
             // Existing status + List of statuses -> needed to mock statusRepository
-            Status status = new Status("A faire", new java.sql.Timestamp(System.currentTimeMillis()), existingApplication);
+            Status status = new Status(StatusState.A_FAIRE, new java.sql.Timestamp(System.currentTimeMillis()), existingApplication);
             ReflectionTestUtils.setField(status, "id", 1L);
 
             List<Status> statuses = List.of(status);
@@ -254,7 +255,7 @@ public class ApplicationServiceTest {
 
             // Statuses
             assertEquals(1, result.getStatuses().size());
-            assertEquals("A faire", result.getStatuses().get(0).getState());
+            assertEquals(StatusState.A_FAIRE, result.getStatuses().get(0).getState());
     }
 
     // --- TEST : GETAPPLICATIONBYID SHOULD FAIL WHEN APPLICATION ID IS NOT FOUND --- 
@@ -341,7 +342,7 @@ public class ApplicationServiceTest {
             ReflectionTestUtils.setField(savedApplication, "id", 1L);
 
             // Existing status + List of statuses
-            Status savedStatus = new Status("A faire", new java.sql.Timestamp(System.currentTimeMillis()), savedApplication);
+            Status savedStatus = new Status(StatusState.A_FAIRE, new java.sql.Timestamp(System.currentTimeMillis()), savedApplication);
             ReflectionTestUtils.setField(savedStatus, "id", 1L);
 
             List<Status> statuses = List.of(savedStatus);
@@ -371,7 +372,7 @@ public class ApplicationServiceTest {
 
             // Statuses
             assertEquals(1, result.getStatuses().size());
-            assertEquals("A faire", result.getStatuses().get(0).getState());
+            assertEquals(StatusState.A_FAIRE, result.getStatuses().get(0).getState());
     }
 
     // --- TEST : UPDATEAPPLICATION SHOULD FAIL WHEN APPLICATION ID IS NOT FOUND ---
@@ -455,7 +456,7 @@ public class ApplicationServiceTest {
             ReflectionTestUtils.setField(existingApplication, "id", 1L);
 
             // Existing status -> required to mock statusRepository
-            Status savedStatus = new Status("A faire", new java.sql.Timestamp(System.currentTimeMillis()), existingApplication);
+            Status savedStatus = new Status(StatusState.A_FAIRE, new java.sql.Timestamp(System.currentTimeMillis()), existingApplication);
             ReflectionTestUtils.setField(savedStatus, "id", 1L);
 
             List<Status> statuses = List.of(savedStatus);
