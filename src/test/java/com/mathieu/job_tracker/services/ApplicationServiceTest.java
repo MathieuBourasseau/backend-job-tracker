@@ -369,6 +369,22 @@ public class ApplicationServiceTest {
             // Statuses
             assertEquals(1, result.getStatuses().size());
             assertEquals("A faire", result.getStatuses().get(0).getState());
+    }
 
+    // --- TEST : UPDATEAPPLICATION SHOULD FAIL WHEN APPLICATION ID IS NOT FOUND
+    @Test
+    void updateApplication_shouldFail_WhenApplicationIdIsNotFOund(){
+
+        // Arrange data required : dto + mock applicationRepository
+        ApplicationCreateDto dto = new ApplicationCreateDto(
+            "link", "contact", "jobTitle", "location", 1000, "CDI",
+            new java.sql.Date(System.currentTimeMillis()),
+            "Acme", "Tech"
+        );
+
+        when(applicationRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Act and assert : when application is not valid, it should throw ResourceNotFoundException
+        assertThrows(ResourceNotFoundException.class,() -> applicationService.updateApplication(1L, 1L, dto));
     }
 }
