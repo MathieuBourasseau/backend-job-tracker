@@ -2,6 +2,7 @@ package com.mathieu.job_tracker.services;
 
 import com.mathieu.job_tracker.dto.ApplicationCreateDto;
 import com.mathieu.job_tracker.dto.ApplicationResponseDto;
+import com.mathieu.job_tracker.dto.ApplicationUpdateDto;
 import com.mathieu.job_tracker.exceptions.ResourceNotFoundException;
 import com.mathieu.job_tracker.models.Application;
 import com.mathieu.job_tracker.models.Company;
@@ -306,10 +307,11 @@ public class ApplicationServiceTest {
         // Arrange data required
 
             // dto
-            ApplicationCreateDto dto = new ApplicationCreateDto(
+            ApplicationUpdateDto dto = new ApplicationUpdateDto(
                 "link", "contact", "jobTitle", "location", 1000, "CDI",
                 new java.sql.Date(System.currentTimeMillis()),
-                "Acme", "Tech"
+                "Acme", "Tech",
+                null, null, false, null
             );
 
             // Existing user -> required to create application
@@ -377,10 +379,11 @@ public class ApplicationServiceTest {
     void updateApplication_shouldFail_WhenApplicationIdIsNotFOund(){
 
         // Arrange data required : dto + mock applicationRepository
-        ApplicationCreateDto dto = new ApplicationCreateDto(
+        ApplicationUpdateDto dto = new ApplicationUpdateDto(
             "link", "contact", "jobTitle", "location", 1000, "CDI",
             new java.sql.Date(System.currentTimeMillis()),
-            "Acme", "Tech"
+            "Acme", "Tech",
+            null, null, false, null
         );
 
         when(applicationRepository.findById(1L)).thenReturn(Optional.empty());
@@ -396,10 +399,11 @@ public class ApplicationServiceTest {
         // Arrange data required
 
             // dto
-            ApplicationCreateDto dto = new ApplicationCreateDto(
+            ApplicationUpdateDto dto = new ApplicationUpdateDto(
                 "link", "contact", "jobTitle", "location", 1000, "CDI",
                 new java.sql.Date(System.currentTimeMillis()),
-                "Acme", "Tech"
+                "Acme", "Tech",
+                null, null, false, null
             );
 
             // Existing user -> required to create application

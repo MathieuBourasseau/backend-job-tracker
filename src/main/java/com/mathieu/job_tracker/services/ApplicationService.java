@@ -2,6 +2,7 @@ package com.mathieu.job_tracker.services;
 
 import com.mathieu.job_tracker.dto.ApplicationCreateDto;
 import com.mathieu.job_tracker.dto.ApplicationResponseDto;
+import com.mathieu.job_tracker.dto.ApplicationUpdateDto;
 import com.mathieu.job_tracker.dto.StatusResponseDto;
 import com.mathieu.job_tracker.exceptions.ResourceNotFoundException;
 import com.mathieu.job_tracker.models.Application;
@@ -187,7 +188,7 @@ public class ApplicationService {
 
     //  --- UPDATE APPLICATION METHOD --- 
 
-    public ApplicationResponseDto updateApplication(Long userId, Long id, ApplicationCreateDto dto){
+    public ApplicationResponseDto updateApplication(Long userId, Long id, ApplicationUpdateDto dto){
 
         // Find the existing application, or fail if it doesn't exist
         Application existingApplication = applicationRepository.findById(id)
@@ -211,6 +212,11 @@ public class ApplicationService {
         existingApplication.setContract(dto.getContract());
         existingApplication.setApplicationDate(dto.getApplicationDate());
         existingApplication.setCompany(company);
+        existingApplication.setApplicationReSubmissionDate(dto.getApplicationReSubmissionDate());
+        existingApplication.setApplicationReSubmissionDate2(dto.getApplicationReSubmissionDate2());
+        existingApplication.setInterview(dto.getInterview());
+        existingApplication.setRefusalReason(dto.getRefusalReason());
+
 
         Application savedApplication = applicationRepository.save(existingApplication);
 

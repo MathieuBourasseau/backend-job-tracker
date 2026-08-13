@@ -2,6 +2,7 @@ package com.mathieu.job_tracker.controllers;
 
 import com.mathieu.job_tracker.dto.ApplicationCreateDto;
 import com.mathieu.job_tracker.dto.ApplicationResponseDto;
+import com.mathieu.job_tracker.dto.ApplicationUpdateDto;
 import com.mathieu.job_tracker.services.ApplicationService;
 
 import org.springframework.http.HttpStatus;
@@ -50,7 +51,7 @@ public class ApplicationController {
 
     // PUT route to update an application
     @PutMapping("/{applicationId}")
-    public ResponseEntity<ApplicationResponseDto> updateApplication(Authentication authentication, @PathVariable Long applicationId, @Valid @RequestBody ApplicationCreateDto dto){
+    public ResponseEntity<ApplicationResponseDto> updateApplication(Authentication authentication, @PathVariable Long applicationId, @Valid @RequestBody ApplicationUpdateDto dto){
         Long userId = (Long) authentication.getPrincipal();
         ApplicationResponseDto updatedApplication = applicationService.updateApplication(userId, applicationId, dto);
         return ResponseEntity.ok(updatedApplication);
