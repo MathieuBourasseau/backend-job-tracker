@@ -268,4 +268,33 @@ public class ApplicationServiceTest {
             assertThrows(ResourceNotFoundException.class, () -> applicationService.getApplicationById(1L,2L));
     }
 
+    // --- TEST : GETAPPLICATIONBYID SHOULD FAIL WHEN USER ID IS NOT FOUND ---
+    @Test
+    void getApplicationById_shouldFail_WhenUserIdIsNotFound(){
+
+        // Arrange data 
+
+            // Existing user -> needed to create application
+            User existingUser = new User("test@test.com", "hashedPassword");
+            ReflectionTestUtils.setField(existingUser, "id", 1L);
+
+            // Existing company -> needed to create application
+            Company existingCompany = new Company("Acme", "Tech");
+            ReflectionTestUtils.setField(existingCompany, "id", 1L);
+
+            // Existing application -> because in this case the application is found
+            Application existingApplication = new Application(
+                "link", "contact", "jobTitle", "location", 1000, "CDI",
+                new java.sql.Date(System.currentTimeMillis()),
+                null, null, false, null,
+                existingUser, existingCompany
+            );
+            ReflectionTestUtils.setField(existingApplication, "id", 1L);
+
+            when(applicationRepository.findById(1L)).thenReturn(Optional.of(existingApplication));
+        
+        // Act and assert : when getApplicationById is called with wrong userId, it should throw ResourceNotFoundException
+            
+            assertThrows(ResourceNotFoundException.class, ()-> applicationService.getApplicationById(2L, 1L));
+    }
 }
