@@ -244,6 +244,12 @@ public class ApplicationService {
             statusResponseDtos.add(new StatusResponseDto(status.getId(), status.getState(), status.getDate()));
         }
 
+        // Get the last status with the most recent date
+        Status mostRecentStatus = listStatus.stream().max(Comparator.comparing(Status::getDate)).get();
+
+        // Checking if it is necessary to send a reminder
+        Boolean aRelancer = savedApplication.needsFollowUp(mostRecentStatus.getState());
+
         // Create responseDto
         ApplicationResponseDto responseDto = new ApplicationResponseDto(
                 savedApplication.getId(),
@@ -261,7 +267,9 @@ public class ApplicationService {
                 company.getName(),
                 company.getActivity(),
                 company.getId(),
-                statusResponseDtos);
+                statusResponseDtos,
+                aRelancer
+            );
 
         return responseDto;
     }
