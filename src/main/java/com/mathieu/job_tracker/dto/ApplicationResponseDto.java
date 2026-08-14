@@ -22,6 +22,7 @@ public class ApplicationResponseDto {
     private String companyActivity;
     private Long companyId;
     private List<StatusResponseDto> statuses;
+    private Boolean aRelancer;
 
     // Constructors
     public ApplicationResponseDto() {}
@@ -42,7 +43,8 @@ public class ApplicationResponseDto {
         String companyName, 
         String companyActivity, 
         Long companyId, 
-        List<StatusResponseDto> statuses) {
+        List<StatusResponseDto> statuses,
+        Boolean aRelancer) {
         this.id = id;
         this.link = link;
         this.contact = contact;
@@ -59,6 +61,7 @@ public class ApplicationResponseDto {
         this.companyActivity = companyActivity;
         this.companyId = companyId;
         this.statuses = statuses;
+        this.aRelancer = aRelancer;
     }
 
     // Getters
@@ -124,6 +127,10 @@ public class ApplicationResponseDto {
 
     public List<StatusResponseDto> getStatuses() {
         return this.statuses;
+    }
+
+    public Boolean getARelancer(){
+        return this.aRelancer;
     }
 
 }

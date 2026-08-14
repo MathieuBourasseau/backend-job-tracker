@@ -1,6 +1,8 @@
 package com.mathieu.job_tracker.models;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import jakarta.persistence.*;
 
@@ -199,5 +201,36 @@ public class Application {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public Boolean needsFollowUp(StatusState currentStatusState){
+
+        // If the current status is different from EN_COURS, no follow-up is needed
+        if(currentStatusState != StatusState.EN_COURS){
+            return false;
+        }
+
+        // If both follow-ups have already been made, no more follow-up is needed
+        // Otherwise, get the last relevant date (last follow-up or initial submission) and check if 7 days have passed
+        if(this.application_re_submission_date_2 != null){
+
+            return false;
+
+        } else {
+
+            Date lastAction = (this.application_re_submission_date != null) ? this.application_re_submission_date : this.application_date;
+
+            LocalDate lastActionLocalDate = lastAction.toLocalDate();
+
+            LocalDate today = LocalDate.now();
+
+            Long gapBetweenDates = ChronoUnit.DAYS.between(lastActionLocalDate, today);
+
+            if(gapBetweenDates >= 7){
+                return true;
+            } else {
+                return false;
+            }
+        }   
     }
 }
