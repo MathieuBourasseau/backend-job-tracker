@@ -114,6 +114,11 @@ public class ApplicationService {
                 statusResponseDtos.add(new StatusResponseDto(status.getId(), status.getState(), status.getDate()));
             }
 
+            // Get the status by the most recent date
+            Status mostRecentStatus = statusList.stream().max(Comparator.comparing(Status::getDate)).get();
+
+            Boolean aRelancer = application.needsFollowUp(mostRecentStatus.getState());
+
             // Build the response DTO for this application
             ApplicationResponseDto responseDto = new ApplicationResponseDto(
                     application.getId(),
@@ -131,7 +136,9 @@ public class ApplicationService {
                     application.getCompany().getName(),
                     application.getCompany().getActivity(),
                     application.getCompany().getId(),
-                    statusResponseDtos);
+                    statusResponseDtos,
+                    aRelancer
+                );
 
             // Add this application's DTO to the final result list
             result.add(responseDto);
