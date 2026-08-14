@@ -6,12 +6,14 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class UserControllerIntegrationTest {
 
     @Autowired
@@ -30,6 +32,33 @@ public class UserControllerIntegrationTest {
                     }
                     """))
                 .andExpect(status().isCreated());
+    }
+
+    // --- TEST : CREATEUSER SHOULD RETURN 409 WHEN EMAIL IS ALREADY TAKEN ---
+    @Test
+    void createUser_shouldReturn409_whenEmailIsAlreadyTaken() throws Exception {
+
+        // First registration : should succeed
+        mockMvc.perform(post("/api/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                      "email": "duplicate@test.com",
+                      "password": "password123"
+                    }
+                    """))
+                .andExpect(status().isCreated());
+
+        // Second registration with the same email : should fail
+        mockMvc.perform(post("/api/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                      "email": "duplicate@test.com",
+                      "password": "password123"
+                    }
+                    """))
+                .andExpect(status().isConflict());
     }
 
 }
