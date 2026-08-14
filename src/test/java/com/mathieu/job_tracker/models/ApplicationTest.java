@@ -127,5 +127,4 @@ public class ApplicationTest {
         // Assert : less than 7 days since the first relance, no follow-up needed yet
         assertFalse(result);
     }
-
 }
