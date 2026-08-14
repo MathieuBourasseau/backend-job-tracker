@@ -86,4 +86,41 @@ public class ApplicationControllerIntegrationTest {
                 .andExpect(status().isCreated());
     }
 
+    // --- TEST : GETAPPLICATIONBYID SHOULD RETURN 404 WHEN APPLICATION BELONGS TO ANOTHER USER ---
+    @Test
+    void getApplicationById_shouldReturn404_whenApplicationBelongsToAnotherUser() throws Exception {
+
+        // User A creates an application
+        String tokenA = registerAndLogin("owner@test.com");
+
+        MvcResult createResult = mockMvc.perform(post("/api/applications")
+                .header("Authorization", "Bearer " + tokenA)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                      "link": "https://example.com/job",
+                      "contact": "recruiter",
+                      "jobTitle": "Developpeur backend",
+                      "location": "Paris",
+                      "salary": 40000,
+                      "contract": "CDI",
+                      "applicationDate": "2026-08-01",
+                      "companyName": "Acme",
+                      "companyActivity": "Tech"
+                    }
+                    """))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        String createResponseBody = createResult.getResponse().getContentAsString();
+        Long applicationId = objectMapper.readTree(createResponseBody).get("id").asLong();
+
+        // User B tries to access user A's application
+        String tokenB = registerAndLogin("intruder@test.com");
+
+        mockMvc.perform(get("/api/applications/" + applicationId)
+                .header("Authorization", "Bearer " + tokenB))
+                .andExpect(status().isNotFound());
+    }
+
 }
