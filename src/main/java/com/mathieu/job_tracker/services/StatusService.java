@@ -11,6 +11,7 @@ import com.mathieu.job_tracker.repositories.ApplicationRepository;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -61,6 +62,12 @@ public class StatusService {
             ));
         }
 
+        // Get the status by the most recent date
+        Status mostRecentStatus = listStatus.stream().max(Comparator.comparing(Status::getDate)).get();
+
+        // Checking if it is necessary to send a reminder
+        Boolean aRelancer = application.needsFollowUp(mostRecentStatus.getState());
+
         // Create ApplicationResponseDto
         ApplicationResponseDto responseDto = new ApplicationResponseDto(
                 application.getId(),
@@ -78,7 +85,8 @@ public class StatusService {
                 application.getCompany().getName(),
                 application.getCompany().getActivity(),
                 application.getCompany().getId(),
-                statusReponseDtos
+                statusReponseDtos,
+                aRelancer
         );
 
         return responseDto;
