@@ -1,6 +1,6 @@
 # Job Tracker — Back-end
 
-> 🚧 **Projet en cours de développement.** Ce dépôt contient uniquement le back-end pour le moment (le front-end React/TypeScript sera développé séparément). Les tests unitaires sont terminés, les tests d'intégration restent à écrire — voir la section [Roadmap](#roadmap).
+> 🚧 **Projet en cours de développement.** Ce dépôt contient uniquement le back-end pour le moment (le front-end React/TypeScript sera développé séparément). Le back-end est fonctionnellement complet et testé (unitaire + intégration) — voir la section [Roadmap](#roadmap).
 
 Application de suivi de candidatures (recherche d'emploi/alternance), pensée pour remplacer un suivi manuel type Excel. Projet personnel de portfolio, développé pour démontrer une maîtrise de Java/Spring Boot sur un projet complet : authentification, CRUD, relations de données, logique métier.
 
@@ -10,7 +10,7 @@ Application de suivi de candidatures (recherche d'emploi/alternance), pensée po
 - **Spring Data JPA** + **PostgreSQL**
 - **Spring Security** + **JJWT** (authentification par token)
 - **Spring Boot Validation** (Bean Validation)
-- **JUnit 5** + **Mockito** (tests unitaires)
+- **JUnit 5** + **Mockito** (tests unitaires) + **MockMvc** (tests d'intégration)
 - Architecture en couches : `Controller → Service → Repository`, avec séparation DTO / Entité
 
 ## Fonctionnalités
@@ -18,17 +18,17 @@ Application de suivi de candidatures (recherche d'emploi/alternance), pensée po
 ### Implémentées
 - Inscription (`User`) avec mot de passe haché (BCrypt) et connexion (JWT)
 - Authentification par token sur toutes les routes protégées, avec isolation des données : chaque utilisateur n'a accès qu'à ses propres candidatures
-- Gestion des candidatures (`Application`) : création, consultation (liste + détail), modification, suppression
+- Gestion des candidatures (`Application`) : création, consultation (liste + détail), modification (y compris entretien obtenu, raison de refus, dates de relance), suppression
 - Gestion automatique des entreprises (`Company`) : réutilisation d'une entreprise existante par nom plutôt que duplication
-- Historique des statuts (`Status`) horodaté et consultable, jamais écrasé — chaque changement de statut ajoute une nouvelle entrée
-- Validation des données d'entrée (Bean Validation) sur les routes de création
+- Historique des statuts (`Status`) horodaté et consultable, jamais écrasé — chaque changement de statut ajoute une nouvelle entrée, statut contrôlé par un enum (`A_FAIRE`/`EN_COURS`/`REFUS`)
+- Relances automatiques : signalement dynamique (`aRelancer`) qu'une candidature nécessite une relance après 7 jours sans réponse, jusqu'à 2 relances maximum
+- Validation des données d'entrée (Bean Validation) sur les routes de création/modification
 - Gestion centralisée des erreurs (`@RestControllerAdvice`)
-- Tests unitaires (JUnit 5 + Mockito) sur l'ensemble des Services
+- Tests unitaires (JUnit 5 + Mockito) sur l'ensemble des Services, tests d'intégration (MockMvc) sur les Controllers
 
 ### À venir
-- Relances automatiques (signalement à J+7 sans réponse)
-- Modification de l'entretien obtenu, de la raison de refus et des dates de relance sur une candidature (champs déjà présents en base, pas encore exposés côté DTO/API)
-- Tests d'intégration
+- Front-end (React/TypeScript)
+- Déploiement
 
 ## Modèle de données
 
@@ -67,11 +67,24 @@ Modélisation complète (MCD, MLD, MPD, dictionnaire de données) disponible dan
    ./mvnw spring-boot:run
    ```
 
+## Lancer les tests
+
+Les tests d'intégration nécessitent une base de données dédiée, séparée de la base de dev :
+```sql
+CREATE DATABASE job_tracker_test_db;
+ALTER DATABASE job_tracker_test_db OWNER TO job_tracker_user;
+```
+Puis créer `src/test/resources/application.properties` (non versionné) pointant vers cette base — voir `src/main/resources/application.properties` comme modèle.
+
+```bash
+./mvnw test
+```
+
 ## Roadmap
 
 1. ~~Modélisation, entités, repositories, DTOs, services, controllers, validation~~
 2. ~~Gestion centralisée des erreurs~~
 3. ~~Authentification (Spring Security + JWT)~~
-4. Tests automatisés (~~unitaires~~, intégration à venir)
+4. ~~Tests automatisés (unitaires + intégration)~~
 5. Front-end (React/TypeScript) — dépôt séparé
 6. Déploiement (Render + Vercel)
