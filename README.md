@@ -1,8 +1,8 @@
 # Job Tracker — Back-end
 
-> 🚧 **Projet en cours de développement.** Ce dépôt contient uniquement le back-end pour le moment (le front-end React/TypeScript sera développé séparément). Le back-end est fonctionnellement complet et testé (unitaire + intégration) — voir la section [Roadmap](#roadmap).
-
 Application de suivi de candidatures (recherche d'emploi/alternance), pensée pour remplacer un suivi manuel type Excel. Projet personnel de portfolio, développé pour démontrer une maîtrise de Java/Spring Boot sur un projet complet : authentification, CRUD, relations de données, logique métier.
+
+Ce dépôt contient le back-end. Le front-end (React/TypeScript) est développé dans un [dépôt séparé](https://github.com/MathieuBourasseau/job-tracker-front). Le projet est déployé : back-end sur Render, front-end sur Vercel.
 
 ## Stack technique
 
@@ -15,7 +15,6 @@ Application de suivi de candidatures (recherche d'emploi/alternance), pensée po
 
 ## Fonctionnalités
 
-### Implémentées
 - Inscription (`User`) avec mot de passe haché (BCrypt) et connexion (JWT)
 - Authentification par token sur toutes les routes protégées, avec isolation des données : chaque utilisateur n'a accès qu'à ses propres candidatures
 - Gestion des candidatures (`Application`) : création, consultation (liste + détail), modification (y compris entretien obtenu, raison de refus, dates de relance), suppression
@@ -25,10 +24,8 @@ Application de suivi de candidatures (recherche d'emploi/alternance), pensée po
 - Validation des données d'entrée (Bean Validation) sur les routes de création/modification
 - Gestion centralisée des erreurs (`@RestControllerAdvice`)
 - Tests unitaires (JUnit 5 + Mockito) sur l'ensemble des Services, tests d'intégration (MockMvc) sur les Controllers
-
-### À venir
-- Front-end (React/TypeScript)
-- Déploiement
+- Front-end (React/TypeScript) — [dépôt séparé](https://github.com/MathieuBourasseau/job-tracker-front)
+- Déploiement (back-end sur Render, front-end sur Vercel), CORS configuré pour le front en local et en production
 
 ## Modèle de données
 
@@ -86,5 +83,5 @@ Puis créer `src/test/resources/application.properties` (non versionné) pointan
 2. ~~Gestion centralisée des erreurs~~
 3. ~~Authentification (Spring Security + JWT)~~
 4. ~~Tests automatisés (unitaires + intégration)~~
-5. Front-end (React/TypeScript) — dépôt séparé
-6. Déploiement (Render + Vercel)
+5. ~~Front-end (React/TypeScript) — dépôt séparé~~
+6. ~~Déploiement (Render + Vercel)~~
